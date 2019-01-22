@@ -76,6 +76,8 @@ Common options (for a complete list please see the User Guide or visit http://tr
 
     -gappyout                Use automated selection on "gappyout" mode. This method only uses information based on gaps' distribution. (see User Guide).
     -strict                  Use automated selection on "strict" mode. (see User Guide).
+    -strictE                 Use automated selection on "strictE" mode.
+                                Same as strict, but using Entropy instead of Similarity.
     -strictplus              Use automated selection on "strictplus" mode. (see User Guide).
                                  (Optimized for Neighbour Joining phylogenetic tree reconstruction).
 
