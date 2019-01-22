@@ -613,7 +613,7 @@ namespace statistics {
 
         int size = 20;
 
-        std::string fname = alig.filename.substr(6, alig.filename.size() - 7);
+        std::string fname = alig.filename;
 
         cout
                 << std::setw(fname.length() + 7)
@@ -675,7 +675,7 @@ namespace statistics {
         float refer, *vectAux;
         int i, num;
 
-        std::string fname = alig.filename.substr(6, alig.filename.size() - 7);
+        std::string fname = alig.filename;
 
         cout
                 << std::setw(fname.length() + 7)

@@ -95,13 +95,20 @@ Common options (for a complete list please see the User Guide or visit http://tr
     -gw <n>                  (half) Window size only applies to statistics/methods based on Gaps.
     -sw <n>                  (half) Window size only applies to statistics/methods based on Similarity.
     -cw <n>                  (half) Window size only applies to statistics/methods based on Consistency.
+    -ew <n>                  (half) Window size only applies to statistics/methods based on Entropy.
 
     -sgc                     Print gap scores for each column in the input alignment.
     -sgt                     Print accumulated gap scores for the input alignment.
+
     -ssc                     Print similarity scores for each column in the input alignment.
     -sst                     Print accumulated similarity scores for the input alignment.
+
     -sfc                     Print sum-of-pairs scores for each column from the selected alignment
     -sft                     Print accumulated sum-of-pairs scores for the selected alignment
+
+    -sec                     Print entropy for each column from the selected alignment
+    -set                     Print accumulated entropy scores for the selected alignment
+
     -sident                  Print identity scores for all sequences in the input alignment. (see User Guide).
     -soverlap                Print overlap scores matrix for all sequences in the input alignment. (see User Guide).
 

@@ -92,6 +92,7 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
 
         checkArgument(gappy_out_argument)
         checkArgument(strict_argument)
+        checkArgument(strictE_argument)
         checkArgument(strict_plus_argument)
         checkArgument(automated1_argument)
 
@@ -514,7 +515,7 @@ inline bool trimAlManager::keep_header_argument(const int *argc, char *argv[], i
 }
 
 inline bool trimAlManager::gappy_out_argument(const int *argc, char *argv[], int *i) {
-    if (!strcmp(argv[*i], "-gappyout") && (!strict)) {
+    if (!strcmp(argv[*i], "-gappyout") && (!gappyout)) {
         gappyout = true;
         return true;
     }
@@ -524,6 +525,14 @@ inline bool trimAlManager::gappy_out_argument(const int *argc, char *argv[], int
 inline bool trimAlManager::strict_argument(const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-strict") && (!strict)) {
         strict = true;
+        return true;
+    }
+    return false;
+}
+
+inline bool trimAlManager::strictE_argument(const int *argc, char *argv[], int *i) {
+    if (!strcmp(argv[*i], "-strictE") && (!strictE)) {
+        strictE = true;
         return true;
     }
     return false;
@@ -745,6 +754,8 @@ inline bool trimAlManager::stats_arguments(const int *argc, char *argv[], int *i
     stat_check(sgt)
     stat_check(ssc)
     stat_check(sst)
+    stat_check(sec)
+    stat_check(set)
 
     stat_check(sident)
     stat_check(soverlap)
@@ -801,7 +812,7 @@ bool trimAlManager::processArguments(char *argv[]) {
         //  that have been requested.
         // We can use this information to prevent performing more than one method,
         //  and using as a bool, to check if any automatic method has been used.
-        automatedMethodCount = nogaps + noallgaps + gappyout + strict + strictplus + automated1;
+        automatedMethodCount = nogaps + noallgaps + gappyout + strict + strictplus + strictE + automated1;
 
         check_arguments_incompatibilities();
         check_arguments_needs(argv);
@@ -1061,7 +1072,7 @@ inline bool trimAlManager::check_file_aligned() {
 
 inline bool trimAlManager::check_similarity_matrix() {
     if ((matrixFile != nullptr) && (!appearErrors)) {
-        if ((!strict) && (!strictplus) && (!automated1) && (similarityThreshold == -1) && (!ssc) && (!sst)) {
+        if ((!strict) && (!strictE) && (!strictplus) && (!automated1) && (similarityThreshold == -1) && (!ssc) && (!sst)) {
             debug.report(ErrorCode::MatrixGivenWithNoMethodToUseIt);
             appearErrors = true;
             return true;
@@ -1542,6 +1553,16 @@ inline void trimAlManager::print_statistics() {
         stats++;
     }
 
+    if (sec) {
+        origAlig->Statistics->printStatisticsEntropyColumns();
+        stats++;
+    }
+
+    if (set) {
+        origAlig->Statistics->printStatisticsEntropyTotal();
+        stats++;
+    }
+
     if (sident) {
         origAlig->printSeqIdentity();
         stats++;
@@ -1726,6 +1747,8 @@ inline void trimAlManager::CleanResiduesAuto() {
         tempAlig = singleAlig->Cleaning->clean2ndSlope(/* getComplementary*/ false);
     } else if (strict) {
         tempAlig = singleAlig->Cleaning->cleanCombMethods(/* getComplementary*/ false, false);
+    } else if (strictE) {
+        tempAlig = singleAlig->Cleaning->cleanCombMethodsE(/* getComplementary*/ false, false);
     } else if (strictplus) {
         tempAlig = singleAlig->Cleaning->cleanCombMethods(/* getComplementary*/ false, true);
     }
@@ -1829,13 +1852,16 @@ inline void trimAlManager::set_window_size() {
     if (windowSize != -1) {
         gapWindow = windowSize;
         similarityWindow = windowSize;
+        entropyWindow = windowSize;
     } else {
         if (gapWindow == -1)
             gapWindow = 0;
         if (similarityWindow == -1)
             similarityWindow = 0;
+        if (entropyWindow == -1)
+            entropyWindow = 0;
     }
-    origAlig->setWindowsSize(gapWindow, similarityWindow);
+    origAlig->setWindowsSize(gapWindow, similarityWindow, entropyWindow);
 }
 
 inline void trimAlManager::delete_variables() {

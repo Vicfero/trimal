@@ -39,14 +39,17 @@ public:
         columnNumbering     = false,
         nogaps              = false, 
         noallgaps           = false,
-        gappyout            = false, 
+        gappyout            = false,
         strict              = false,
-        strictplus          = false, 
+        strictE             = false,
+        strictplus          = false,
         automated1          = false,
         sgc                 = false, 
         sgt                 = false, 
         ssc                 = false, 
         sst                 = false,
+        sec                 = false,
+        set                 = false,
         sfc                 = false, 
         sft                 = false, 
         sident              = false, 
@@ -73,8 +76,10 @@ public:
         windowSize              = -1, 
         gapWindow               = -1, 
         similarityWindow        = -1,
-        consistencyWindow       = -1, 
-        blockSize               = -1, 
+        consistencyWindow       = -1,
+        entropyWindow           = -1,
+
+        blockSize               = -1,
         clusters                = -1
         ,
         automatedMethodCount    = -1,
@@ -162,6 +167,7 @@ private: // Parse Arguments Methods
         bool keep_header_argument           (const int* argc, char* argv[], int* currentArg);
         bool gappy_out_argument             (const int* argc, char* argv[], int* currentArg);
         bool strict_argument                (const int* argc, char* argv[], int* currentArg);
+        bool strictE_argument               (const int* argc, char* argv[], int* currentArg);
         bool strict_plus_argument           (const int* argc, char* argv[], int* currentArg);
         bool automated1_argument            (const int* argc, char* argv[], int* currentArg);
         bool residue_overlap_argument       (const int* argc, char* argv[], int* currentArg);

@@ -21,7 +21,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 # Specify the level of optimization used
 #ADD_DEFINITIONS(-O2)
 
-
+SET(GCC_COVERAGE_COMPILE_FLAGS "-ftree-vectorize -ftree-vectorizer-verbose=2")
 
 
 # Specify the include folders, where all our headers are located.
@@ -48,7 +48,9 @@ set(preview
         source/utils.cpp
 
         source/reportsystem.cpp
-        source/InternalBenchmarker.cpp)
+        source/InternalBenchmarker.cpp
+        source/Statistics/Entropy.cpp
+    )
 
 # Create a list of all format states source files
 FILE (GLOB states
@@ -58,8 +60,6 @@ FILE (GLOB states
 add_library(common OBJECT
         ${preview}
         ${states})
-
-
 
 
 # Add the executables

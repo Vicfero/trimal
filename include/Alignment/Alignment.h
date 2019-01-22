@@ -117,7 +117,7 @@ public:
 
     int getNumAminos();
 
-    void setWindowsSize(int ghWindow, int shWindow);
+    void setWindowsSize(int ghWindow_, int shWindow_, int ehWindow_);
 
     void setBlockSize(int blockSize);
 

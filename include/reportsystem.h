@@ -199,6 +199,8 @@ enum ErrorCode {
 
     MultipleOutputFormatsSameName                       = 96,
 
+    EntropyWindowTooBig                                 = 97,
+
 
 
     __MAXERROR,

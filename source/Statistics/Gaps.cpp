@@ -469,7 +469,7 @@ namespace statistics {
         int acm, i;
         int size = 20;
 
-        std::string fname = alig->filename.substr(6, alig->filename.size() - 7);
+        std::string fname = alig->filename;
 
         std::cout
                 << std::setw(fname.length() + 7)

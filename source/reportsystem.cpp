@@ -345,8 +345,9 @@ const std::map<ErrorCode, const char *> reporting::reportManager::ErrorMessages 
 
                 {ErrorCode::MultipleOutputFormatsSameName,
                         "Multiple formats have been requested, but output pattern does not contain tags \"[extension]\" or \"[format]\".\n"
-                        "            Output files will be overwritten. Please, provide an output pattern containing tags to prevent overwritting."}
-
+                        "            Output files will be overwritten. Please, provide an output pattern containing tags to prevent overwritting."},
+                {ErrorCode::EntropyWindowTooBig,
+                        "Entropy window size (-ew) provided is too big, please specify a window lesser than 1/4 of residues"},
         };
 
 void reporting::reportManager::PrintCodesAndMessages() {

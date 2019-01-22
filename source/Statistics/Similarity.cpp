@@ -424,7 +424,7 @@ namespace statistics {
 
         int i, size = 20;
 
-        std::string fname = alig->filename.substr(6, alig->filename.size() - 7);
+        std::string fname = alig->filename;
 
 
         std::cout << std::fixed
@@ -496,7 +496,7 @@ namespace statistics {
         utils::quicksort(vectAux, 0, alig->originalNumberOfResidues - 1);
 
         // Print filename
-        std::string fname = alig->filename.substr(6, alig->filename.size() - 7);
+        std::string fname = alig->filename;
 
         std::cout << std::fixed
              << std::setw(fname.length() + 7)

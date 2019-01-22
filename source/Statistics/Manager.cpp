@@ -4,6 +4,7 @@
 
 #include "Statistics/Similarity.h"
 #include "Statistics/Consistency.h"
+#include "Statistics/Entropy.h"
 #include "InternalBenchmarker.h"
 #include "Statistics/Manager.h"
 
@@ -71,6 +72,34 @@ namespace statistics {
             alig->Statistics->similarity->printConservationAcl();
 
     }
+
+    void Manager::printStatisticsEntropyColumns() {
+        // Create a timerLevel that will report times upon its destruction
+        //	which means the end of the current scope.
+        StartTiming("void Manager::printStatisticsConservationColumns(void) ");
+
+        // Check if the similarity statistics object has been
+        // created */
+        if (calculateEntropyStats())
+            /* then prints the information */
+            alig->Statistics->entropy->printConservationColumns();
+
+    }
+
+    void Manager::printStatisticsEntropyTotal() {
+        // Create a timerLevel that will report times upon its destruction
+        //	which means the end of the current scope.
+        StartTiming("void Manager::printStatisticsConservationTotal(void) ");
+
+
+        // Check if the similarity statistics object has been
+        // created
+        if (calculateEntropyStats())
+            // then prints the information
+            alig->Statistics->entropy->printConservationAcl();
+
+    }
+
 
     bool Manager::setSimilarityMatrix(similarityMatrix *sm) {
         // Create a timerLevel that will report times upon its destruction
@@ -156,6 +185,36 @@ namespace statistics {
         return gaps->applyWindow(ghWindow);
     }
 
+    bool Manager::calculateEntropyStats() {
+        // Create a timerLevel that will report times upon its destruction
+        //	which means the end of the current scope.
+        StartTiming("bool Manager::calculateGapStats(void) ");
+
+        // It the gaps statistics object has not been created
+        // we create it
+        if (!calculateGapStats())
+            return false;
+
+        // It the similarity statistics object has not been
+        // created we create it
+        if (entropy == nullptr) {
+            entropy = new Entropy(alig);
+            entropy->applyWindow(ghWindow);
+        }
+
+        // Compute the similarity statistics from the input
+        // Alignment
+        if (!entropy->calculateVectors(false))
+            return false;
+
+        // Ask to know if it is necessary to apply any window
+        // method. If it's necessary, we apply it
+        if (alig->Statistics->entropy->isDefinedWindow())
+            return true;
+        else
+            return alig->Statistics->entropy->applyWindow(ehWindow);
+    }
+
     Manager::Manager(Alignment *parent) {
         // Create a timerLevel that will report times upon its destruction
         //	which means the end of the current scope.
@@ -185,6 +244,10 @@ namespace statistics {
 
         if (mold->gaps)
             gaps = new Gaps(parent, mold->gaps);
+
+        if (mold->entropy)
+            entropy = new Entropy(parent, mold->entropy);
+
     }
 
     Manager::~Manager() {
@@ -196,5 +259,8 @@ namespace statistics {
 
         delete consistency;
         consistency = nullptr;
+
+        delete entropy;
+        entropy = nullptr;
     }
 }

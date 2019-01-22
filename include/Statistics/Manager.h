@@ -20,6 +20,8 @@ namespace statistics {
 
     class Consistency;
 
+    class Entropy;
+
     /**
      * \brief Class to handle the interaction with Alignment and statistics objects.\n
      * It serves as a wrapper or intermediate between the alignment and each specific stat.\n
@@ -42,6 +44,11 @@ namespace statistics {
         Consistency *consistency = nullptr;
 
         /**
+         * \brief Entropy submodule
+         * */
+        Entropy *entropy = nullptr;
+
+        /**
          * \brief SimilarityMatrix used by Similarity
          * */
         similarityMatrix *_similarityMatrix = nullptr;
@@ -54,6 +61,11 @@ namespace statistics {
          * \brief Similarity window
          * */
         int shWindow;
+
+        /**
+         * \brief Entropy window
+         * */
+        int ehWindow;
 
         /**
          * \brief Method to set a similarity matrix
@@ -77,6 +89,24 @@ namespace statistics {
          * It calls to calculateGapStats() to make sure the information is available before reporting the requested values
          * */
         void printStatisticsGapsTotal();
+
+        /**
+         * \brief Method to handle gap stat calculation\n
+         * It checks if the #gaps submodule has been created, otherwise, creates it
+         * */
+        bool calculateEntropyStats();
+
+        /**
+         * \brief Wrapper to Statistics::Gaps::printGapsColumns()\n
+         * It calls to calculateGapStats() to make sure the information is available before reporting the requested values
+         * */
+        void printStatisticsEntropyColumns();
+
+        /**
+         * \brief Wrapper to Statistics::Gaps::printGapsAcl()\n
+         * It calls to calculateGapStats() to make sure the information is available before reporting the requested values
+         * */
+        void printStatisticsEntropyTotal();
 
         /**
          * \brief Method to handle similarity stat calculation\n
