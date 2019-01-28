@@ -79,8 +79,6 @@ add_library(common OBJECT
         ${states})
 
 
-
-
 # Add the executables
 add_executable(trimal
         source/trimAlMain.cpp
@@ -91,6 +89,13 @@ add_executable(readal
         $<TARGET_OBJECTS:common>)
 
 
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/utils)
+add_executable(multipleNumCol EXCLUDE_FROM_ALL
+        source/multipleNumcCol.cpp
+        $<TARGET_OBJECTS:common>)
+
+add_custom_target(utils
+        DEPENDS multipleNumCol)
 
 
 # Link the mathematical library
