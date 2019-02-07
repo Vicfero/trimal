@@ -82,7 +82,7 @@ namespace statistics {
     }
 
 
-    bool Entropy::calculateVectors(bool cutByGap = false) {
+    bool Entropy::calculateVectors([[maybe_unused]] bool cutByGap = false) {
         // Create a timerLevel that will report times upon its destruction
         //	which means the end of the current scope.
         StartTiming("bool Entropy::calculateVectors(int *gaps) ");
@@ -101,15 +101,15 @@ namespace statistics {
             int N = 0;
             switch (alig->getAlignmentType())
             {
-                case DNA:
+                case DNA: [[fallthrough]];
                 case RNA:
                     N = 4;  break; // 4 Elements
-                case DNA | DEG:
-                case RNA | DEG:
+                case (DNA | DEG): [[fallthrough]];
+                case (RNA | DEG):
                     N = 15; break; // 4 Elements + 6 Pairs + 4 Triplets + 1 Quadruplet
                 case AA:
-                    N = 21; break; // 21 Elements
-                case AA | DEG:
+                    N = 22; break; // 22 Elements
+                case (AA | DEG):
                     N = 24; break; // 24 Elements
                 default:
                     debug.log(VerboseLevel::ERROR)
@@ -117,9 +117,9 @@ namespace statistics {
                     break;
             }
             // Max entropy is obtained when all entries have the same proportion: 1/N
-            // Max Shannon entropy = 1.0F/N * log2(1.0F/N) * N -> log2(1.0F/N)
+            // Max Shannon entropy = 1.0F/N * -log2(1.0F/N) * N -> log2(1.0F/N)
             // We make 1F/log2(1.0F/N) so we can use it as multiplier and not divisor.
-            //      Entropy *= divisor instead of Entropy /= divisor
+            //      This makes the calculation faster
             maxEntropyDivisor = 1.0F / log2(1.0F / N);
         }
         float sequenNumberDivisor = 1.0F / alig->originalNumberOfSequences;
@@ -146,15 +146,18 @@ namespace statistics {
             map['-'] = 1;
 
             EntropyValues[i] = 0;
+            float second;
             for (auto & item : map) {
-                EntropyValues[i] += item.second * log2(item.second * sequenNumberDivisor) * sequenNumberDivisor;
+                // Divide the raw count by the number of sequences to obtain the freq
+                second = (item.second * sequenNumberDivisor);
+                // Add the entropy for each element
+                EntropyValues[i] += second * log2(second);
             }
             // Although Shannon entropy is the negative value of the sum of (x*log2(x))
             // We remove the negative values
             //  by multiplying with maxEntropyDivisor, which is also negative.
             EntropyValues[i] *= maxEntropyDivisor;
         }
-
         return true;
     }
 
