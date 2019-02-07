@@ -106,7 +106,7 @@ namespace statistics {
                     N = 4;  break; // 4 Elements
                 case (DNA | DEG): [[fallthrough]];
                 case (RNA | DEG):
-                    N = 15; break; // 4 Elements + 6 Pairs + 4 Triplets + 1 Quadruplet
+                    N = 14; break; // 4 Elements + 6 Pairs + 4 Triplets
                 case AA:
                     N = 22; break; // 22 Elements
                 case (AA | DEG):
