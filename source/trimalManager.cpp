@@ -1,3 +1,4 @@
+#include "FormatHandling/BaseFormatHandler.h"
 #include "Statistics/similarityMatrix.h"
 #include "Statistics/Consistency.h"
 #include "Statistics/Similarity.h"
@@ -58,68 +59,106 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
         help_arguments(&argc, argv, &i);
 
         // Check arguments. Makes use of the 
-        //  macro checkArgument (start of the file)
+        //  macro checkArgument (defined before the method)
         //  to make code more understandable.
         //
         // Argument passed to checkArgument is,
         //  indeed, a method with signature:
         //  x_argument(&argc, argv, &i)
-        checkArgument(in_argument)
-        checkArgument(vcf_argument)
-        checkArgument(out_argument)
-        checkArgument(html_out_argument)
-        checkArgument(timetracker_out_argument)
-        checkArgument(svg_out_argument)
-        checkArgument(svg_stats_argument)
-        checkArgument(out_format_arguments)
-        checkArgument(matrix_argument)
 
-        checkArgument(compareset_argument)
-        checkArgument(force_select_argument)
-        checkArgument(back_trans_argument)
+        // In-Out
+        {
+            // Alignment in-out
+            checkArgument(in_argument)
+            checkArgument(out_argument)
+            checkArgument(out_format_arguments)
 
-        checkArgument(gap_threshold_argument)
-        checkArgument(similarity_threshold_argument)
-        checkArgument(consistency_threshold_argument)
+            // Trimming Reports
+            checkArgument(html_out_argument)
+            checkArgument(svg_out_argument)
 
-        checkArgument(conservation_threshold_argument)
+            // Compare set
+            checkArgument(compareset_argument)
+            checkArgument(force_select_argument)
 
-        checkArgument(no_gaps_argument)
-        checkArgument(no_all_gaps_argument)
+            // Back translation
+            checkArgument(back_trans_argument)
 
-        checkArgument(keep_seqs_argument)
-        checkArgument(keep_header_argument)
+            // Stats report
+            checkArgument(stats_arguments)
+            checkArgument(svg_stats_argument)
 
-        checkArgument(gappy_out_argument)
-        checkArgument(strict_argument)
-        checkArgument(strictE_argument)
-        checkArgument(strict_plus_argument)
-        checkArgument(automated1_argument)
+            // Time Tracker out
+            checkArgument(timetracker_out_argument)
 
-        checkArgument(residue_overlap_argument)
-        checkArgument(sequence_overlap_argument)
+            // Custom Matrix argument
+            checkArgument(matrix_argument)
 
-        checkArgument(seqs_select_argument)
-        checkArgument(select_cols_argument)
+            // Column Numbering
+            checkArgument(col_numbering_argument)
+        }
 
-        checkArgument(max_identity_argument)
-        checkArgument(clusters_argument)
+        // Stats
+        {
+            // Thresholds
+            checkArgument(gap_threshold_argument)
+            checkArgument(similarity_threshold_argument)
+            checkArgument(consistency_threshold_argument)
+            checkArgument(conservation_threshold_argument)
 
-        checkArgument(terminal_only_argument)
+            // Windows
+            checkArgument(window_argument)
+            checkArgument(gap_window_argument)
+            checkArgument(similarity_window_argument)
+            checkArgument(consistency_window_argument)
+        }
 
-        checkArgument(window_argument)
-        checkArgument(gap_window_argument)
-        checkArgument(similarity_window_argument)
-        checkArgument(consistency_window_argument)
+        // Trimming methods
+        {
+            // Gaps based
+            checkArgument(no_gaps_argument)
+            checkArgument(no_all_gaps_argument)
+            // Automated
+            checkArgument(gappy_out_argument)
+            checkArgument(strict_argument)
+            checkArgument(strictE_argument)
+            checkArgument(strict_plus_argument)
+            checkArgument(automated1_argument)
+            // Overlap
+            checkArgument(residue_overlap_argument)
+            checkArgument(sequence_overlap_argument)
+            // Manual
+            checkArgument(seqs_select_argument)
+            checkArgument(select_cols_argument)
 
-        checkArgument(block_argument)
-        checkArgument(stats_arguments)
 
-        checkArgument(complementary_argument)
+            checkArgument(max_identity_argument)
+            checkArgument(clusters_argument)
+        }
 
-        checkArgument(col_numbering_argument);
-        checkArgument(split_by_stop_codon_argument)
-        checkArgument(ignore_stop_codon_argument)
+        // Modifiers
+        {
+            checkArgument(keep_seqs_argument)
+            checkArgument(keep_header_argument)
+
+            // Back translation Modifiers
+            checkArgument(ignore_stop_codon_argument)
+            checkArgument(split_by_stop_codon_argument)
+
+            checkArgument(block_argument)
+
+            checkArgument(complementary_argument)
+
+            checkArgument(terminal_only_argument)
+        }
+
+        // VCF
+        {
+            checkArgument(vcf_argument)
+            checkArgument(ignore_filter_argument)
+            checkArgument(min_quality_argument)
+            checkArgument(min_coverage_argument)
+        }
 
         // Skip the verbosity option, as it was checked before the loop
         if (!strcmp(argv[i], "--verbosity") || !strcmp(argv[i], "-v")) {
@@ -160,6 +199,8 @@ inline bool trimAlManager::check_arguments_incompatibilities() {
     check_stats_incompatibilities();
     check_codon_behaviour_incompatibility();
     check_combinations_among_thresholds_incompatibility();
+
+    check_vcf_incompatibility();
 
     return appearErrors;
 }
@@ -205,8 +246,8 @@ inline void trimAlManager::help_arguments(const int *argc, char *argv[], int *i)
     }
 
     if (!strcmp(argv[*i], "-lf") || !strcmp(argv[*i], "--listformats")) {
-        std::cout << "Input Formats:  " << formatManager.getInputFormatsAvailable() << "\n";
-        std::cout << "Output Formats: " << formatManager.getOutputFormatsAvailable() << "\n";
+        std::cout << "Input Formats:  \t" << formatManager.getInputFormatsAvailable() << "\n\n";
+        std::cout << "Output Formats: \t" << formatManager.getOutputFormatsAvailable() << "\n";
         exit(0);
     }
 }
@@ -802,6 +843,48 @@ inline bool trimAlManager::ignore_stop_codon_argument(const int *argc, char *arg
     return false;
 }
 
+inline bool trimAlManager::ignore_filter_argument(const int *argc, char *argv[], int *i) {
+    if ((!strcmp(argv[*i], "-ignorefilter")) && !ignoreFilter) {
+        ignoreFilter = true;
+        return true;
+    }
+    return false;
+}
+
+inline bool trimAlManager::min_quality_argument(const int *argc, char *argv[], int *i) {
+    if (!strcmp(argv[*i], "-minquality") && ((*i) + 1 != *argc) && (minQuality == -1)) {
+        if (utils::isNumber(argv[*i + 1])) {
+            minQuality = atof(argv[++*i]);
+            if (minQuality < 0) {
+                debug.report(ErrorCode::MinQualityLesserThan0);
+                appearErrors = true;
+            }
+        } else {
+            debug.report(ErrorCode::MinQualityNotRecognized);
+            appearErrors = true;
+        }
+        return true;
+    }
+    return false;
+}
+
+inline bool trimAlManager::min_coverage_argument(const int *argc, char *argv[], int *i) {
+    if (!strcmp(argv[*i], "-mincoverage") && ((*i) + 1 != *argc) && (minCoverage == -1)) {
+        if (utils::isNumber(argv[*i + 1])) {
+            minCoverage = atof(argv[++*i]);
+            if (minCoverage < 0) {
+                debug.report(ErrorCode::MinCoverageLesserThan0);
+                appearErrors = true;
+            }
+        } else {
+            debug.report(ErrorCode::MinCoverageNotRecognized);
+            appearErrors = true;
+        }
+        return true;
+    }
+    return false;
+}
+
 bool trimAlManager::processArguments(char *argv[]) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
@@ -996,6 +1079,33 @@ inline bool trimAlManager::check_combinations_among_thresholds_incompatibility()
     return false;
 }
 
+inline bool trimAlManager::check_vcf_incompatibility()
+{
+    bool returnValue = false;
+    if (vcfs == nullptr)
+    {
+        if (minQuality != -1)
+        {
+            appearErrors = true;
+            debug.report(ErrorCode::OnlyValidWithVCF, "MinQuality");
+        }
+
+        if (minCoverage != -1)
+        {
+            appearErrors = true;
+            debug.report(ErrorCode::OnlyValidWithVCF, "MinCoverage");
+        }
+
+        if (ignoreFilter)
+        {
+            appearErrors = true;
+            debug.report(ErrorCode::OnlyValidWithVCF, "IgnoreFilter");
+        }
+    }
+    return returnValue;
+}
+
+
 inline bool trimAlManager::check_automated_manual_incompatibilities() {
     if ((getComplementary) && (!appearErrors))
         if (!automatedMethodCount && // Are we not using an automated method?
@@ -1072,7 +1182,7 @@ inline bool trimAlManager::check_file_aligned() {
 
 inline bool trimAlManager::check_similarity_matrix() {
     if ((matrixFile != nullptr) && (!appearErrors)) {
-        if ((!strict) && (!strictE) && (!strictplus) && (!automated1) && (similarityThreshold == -1) && (!ssc) && (!sst)) {
+        if ((!strict) && (!strictplus) && (!automated1) && (similarityThreshold == -1) && (!ssc) && (!sst)) {
             debug.report(ErrorCode::MatrixGivenWithNoMethodToUseIt);
             appearErrors = true;
             return true;
@@ -1352,41 +1462,114 @@ int trimAlManager::perform() {
     // be applied in all the collection.
     else
     {
-        int returnval = 0;
+        int returnValue = 0;
         auto XX = formatManager.splitAlignmentKeeping(*origAlig);
         char replacement = '-';
         ngs::readVCF(
                 /* Dataset          */ XX,
                 /* VCF Collection   */ *vcfs,
-                /* min Quality      */ 0,
-                /* min Coverage     */ 30,
-                /* ignore Filters   */ false,
+                /* min Quality      */ minQuality,
+                /* min Coverage     */ minCoverage,
+                /* ignore Filters   */ ignoreFilter,
                 /* replacement char */ &replacement
         );
 
+        // If no output filename has been provided,
+        //      or the filename does not contain the [contig] tag,
+        //      the sequence names should contain the name of the contig
+        //      to prevent repeated sequences names.
+        if (outfile == nullptr || std::string(outfile).find("[contig]") == std::string::npos)
+        {
+            // On each alignment, add the prefix to each non-reference sequence -> [1:]
+            for (Alignment* &i : XX)
+            {
+                for (int x = 1; x < i->originalNumberOfSequences; x++)
+                    i->seqsName[x] = i->seqsName[0] + "." + i->seqsName[x];
+            }
+
+            // We check if outfile is not null because checking
+            //      if it contains the contig tag
+            //      it needs to be converted to string
+            //      and it needs to check if outfile is not null previously
+            // As this two conditions have previously checked,
+            //      if outfile is not null, it doesn't contain the tag either.
+            if (outfile != nullptr)
+            {
+                // Set the mode of opening files of the manager to append.
+                formatManager.openmode = std::ofstream::out | std::ofstream::app;
+
+                // Store the output filename
+                std::string fname = formatManager.replaceINtag(*origAlig, outfile);
+
+                // Iterate over all formats requested
+                for (const std::string & token : oformats) {
+
+                    // Get the handler for each format handler
+                    auto * handler = formatManager.getFormatFromToken(token);
+                    if (handler != nullptr)
+                    {
+                        // Open the destination file to empty it
+                        std::string newName =
+                                utils::ReplaceString(
+                                        fname, "[format]", handler->name);
+                        utils::ReplaceStringInPlace(
+                                newName, "[extension]", handler->extension);
+                        std::ofstream tmp(newName);
+                    }
+                }
+            }
+        }
+
+        // To allow users to use [in] and [contig] tags, we should recover the original filename.
+        std::string originalName = origAlig->filename;
+
+        // We can get rid of the original alignment.
         delete origAlig;
+        origAlig = nullptr;
+
+        // Save the original filename pattern containing the tags
+        std::string originalOutFile = outfile == nullptr ? "" : outfile;
+
+        // Free the outfile array. It will be replenished before it's use.
+        delete [] outfile;
 
         for (Alignment* &i : XX) {
-            origAlig = i;
-            origAlig->fillMatrices(true);
-            returnval = std::max(innerPerform(), returnval);
 
+            // If original filename wasn't empty,
+            //      reset it and apply the [contig] tag
+            std::string newOutFile =
+                    utils::ReplaceString(
+                            originalOutFile, "[contig]", i->filename);
+
+            if (!originalOutFile.empty())
+            {
+                outfile = &newOutFile[0];
+                i->filename = originalName;
+            }
+
+            // To use innerPerform, alignment must be stored on origAlig
+            origAlig = i;
+            returnValue = std::max(innerPerform(), returnValue);
+
+            // Delete and nullify tempAlig
             if (tempAlig != origAlig &&
                 tempAlig != singleAlig)
-            {
                 delete tempAlig;
-                tempAlig = nullptr;
-            }
+            tempAlig = nullptr;
+
+            // Delete and nullify singleAlig
             if (singleAlig != origAlig)
-            {
                 delete singleAlig;
-                singleAlig = nullptr;
-            }
+            singleAlig = nullptr;
+
+            // Delete and nullify origAlig
             delete origAlig;
             origAlig = nullptr;
+
         }
+        outfile = nullptr;
         origAlig = nullptr;
-        return returnval;
+        return returnValue;
     }
 }
 
@@ -1427,63 +1610,27 @@ inline int trimAlManager::innerPerform() {
 
 }
 
-inline int trimAlManager::perform_VCF()
-{
-    auto XX = formatManager.splitAlignmentKeeping(*origAlig);
-    char replacement = '-';
-    ngs::readVCF(
-            /* Dataset          */ XX,
-            /* VCF Collection   */ *vcfs,
-            /* min Quality      */ 0,
-            /* min Coverage     */ 30,
-            /* ignore Filters   */ false,
-            /* replacement char */ &replacement
-    );
-
-    for (Alignment* &i : XX) {
-        delete origAlig;
-        origAlig = i;
-
-        origAlig->Cleaning->setTrimTerminalGapsFlag(terminalOnly);
-        origAlig->setKeepSequencesFlag(keepSeqs);
-
-        set_window_size();
-
-        if (blockSize != -1)
-            origAlig->setBlockSize(blockSize);
-
-        if (!create_or_use_similarity_matrix())
-            return -2;
-        
-        if (svgStatsOutFile != nullptr)
-            svg_stats_out();
-
-        origAlig->fillMatrices(true);
-
-        // print_statistics();
-
-        clean_alignment();
-
-        postprocess_alignment();
-
-        output_reports();
-
-        save_alignment();
-    }
-    return 0;
-}
-
 inline void trimAlManager::save_alignment()
 {
     if ((outfile != nullptr) && (!appearErrors)) {
         std::string outFileString = std::string(outfile);
-        if (!formatManager.saveAlignment(outFileString, &oformats, singleAlig)) {
-            appearErrors = true;
-        }
+        if (singleAlig != nullptr)
+        {
+            if (!formatManager.saveAlignment(outFileString, oformats, *singleAlig)) {
+                appearErrors = true;
+            }
+        } else debug.report(
+                ErrorCode::SomethingWentWrong_reportToDeveloper,
+                "Trying to save a nullptr alignment on save_alignment");
 
     } else if ((stats >= 0) && (!appearErrors))
     {
-        formatManager.saveAlignment("", &oformats, singleAlig);
+        std::string emptyString;
+        if (singleAlig != nullptr)
+            formatManager.saveAlignment(emptyString, oformats, *singleAlig);
+        else debug.report(
+                ErrorCode::SomethingWentWrong_reportToDeveloper,
+                "Trying to save a nullptr alignment on save_alignment");
     }
 }
 
@@ -1938,12 +2085,19 @@ inline void trimAlManager::menu() {
         #include "RawText/menu.txt"
     };
 
-    utils::ReplaceStringInPlace(menu, "[iformat]", formatManager.getInputFormatsAvailable());
-    utils::ReplaceStringInPlace(menu, "[oformat]", formatManager.getOutputFormatsAvailable());
-    utils::ReplaceStringInPlace(menu, "[version]", VERSION);
+    utils::ReplaceStringInPlace(menu, "[iformat]",  formatManager.getInputFormatsAvailable());
+    utils::ReplaceStringInPlace(menu, "[oformat]",  formatManager.getOutputFormatsAvailable());
+    utils::ReplaceStringInPlace(menu, "[version]",  VERSION);
     utils::ReplaceStringInPlace(menu, "[revision]", REVISION);
-    utils::ReplaceStringInPlace(menu, "[build]", BUILD);
-    utils::ReplaceStringInPlace(menu, "[authors]", AUTHORS);
+    utils::ReplaceStringInPlace(menu, "[build]",    BUILD);
+    utils::ReplaceStringInPlace(menu, "[authors]",  AUTHORS);
+
+    using namespace utils::TerminalColors;
+
+    utils::ReplaceStringInPlace(menu, "[b][u]", colors[BOLD] + colors[UNDERLINE]);
+    utils::ReplaceStringInPlace(menu, "[b]",    colors[BOLD]);
+    utils::ReplaceStringInPlace(menu, "[u]",    colors[UNDERLINE]);
+    utils::ReplaceStringInPlace(menu, "[r]",    colors[RESET]);
 
     std::cout << menu;
 }
@@ -1958,6 +2112,13 @@ inline void trimAlManager::examples() {
     std::string examples = {
         #include "RawText/examples.txt"
     };
+
+    using namespace utils::TerminalColors;
+
+    utils::ReplaceStringInPlace(examples, "[b][u]", colors[BOLD] + colors[UNDERLINE]);
+    utils::ReplaceStringInPlace(examples, "[b]",    colors[BOLD]);
+    utils::ReplaceStringInPlace(examples, "[u]",    colors[UNDERLINE]);
+    utils::ReplaceStringInPlace(examples, "[r]",    colors[RESET]);
 
     std::cout << examples;
 }

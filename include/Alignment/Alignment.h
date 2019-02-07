@@ -95,7 +95,7 @@ public:
     int *saveResidues = nullptr;
     int *saveSequences = nullptr;
 
-    bool fillMatrices(bool aligned);
+    bool fillMatrices(bool aligned, bool checkInvalidChars = true);
 
 public:
 
@@ -127,7 +127,7 @@ public:
 
     void printSeqOverlap();
 
-    int getAlignmentType();
+    int getAlignmentType() const;
 
     bool isFileAligned();
 

@@ -471,13 +471,13 @@ namespace utils {
         return line;
     }
 
-    std::string getReverse(std::string toReverse) {
+    std::string getReverse(const std::string &toReverse) {
 
         std::string line(toReverse.size(), ' ');
-        size_t i;
+        long i, x;
 
-        for (i = toReverse.size() - 1; i >= 0; i--)
-            line += toReverse[i];
+        for (i = toReverse.size() - 1, x = 0; i >= 0; i--, x++)
+            line[x] = toReverse[i];
         return line;
     }
 
@@ -498,14 +498,18 @@ namespace utils {
     int checkAlignmentType(int seqNumber, int residNumber, std::string * sequences) {
         // All codes from RNA - DNA - AA and DEG for both versions
 
-        auto check = [](const std::string& pattern, int& counter, const char& character) -> void {
-            size_t pos(0);
-            while ((pos = pattern.find(character, pos)) != std::string::npos )
+        static const auto check =
+            [](const std::string& pattern,
+               int& counter,
+               const char& character) -> void
             {
-                pos++;
-                counter++;
-            }
-        };
+                size_t pos(0);
+                while ((pos = pattern.find(character, pos)) != std::string::npos )
+                {
+                    pos++;
+                    counter++;
+                }
+            };
 
         // Inosinic Acid is a nucleotide, but it's not part of DNA or RNA
         static const std::string COMMON = "ACG";
@@ -619,7 +623,7 @@ namespace utils {
             return SequenceTypes::NotDefined;
     }
 
-    int *readNumbers(std::string line) {
+    int *readNumbers(const std::string &line) {
 
         int i, nElems = 0;
         static int *numbers;
@@ -939,5 +943,33 @@ namespace utils {
         return 1;
     }
 
+    bool fileExists(std::string &path) {
+        struct stat buffer;
+        return (stat (path.c_str(), &buffer) == 0);
+
+        
+    }
+
+    bool fileExists(std::string &&path) {
+        struct stat buffer;
+        return (stat (path.c_str(), &buffer) == 0);
+    }
+
+    namespace TerminalColors {
+        std::map<terminalColor, const std::string> colors = {
+                {TerminalColors::RESET,        "\033[0m"},
+                {TerminalColors::BLACK,        "\033[30m"},         /* Black      */
+                {TerminalColors::RED,          "\033[31m"},         /* Red        */
+                {TerminalColors::GREEN,        "\033[32m"},         /* Green      */
+                {TerminalColors::YELLOW,       "\033[33m"},         /* Yellow     */
+                {TerminalColors::BLUE,         "\033[34m"},         /* Blue       */
+                {TerminalColors::MAGENTA,      "\033[35m"},         /* Magenta    */
+                {TerminalColors::CYAN,         "\033[36m"},         /* Cyan       */
+                {TerminalColors::WHITE,        "\033[37m"},         /* White      */
+                {TerminalColors::BOLD,         "\033[1m"},          /* Bold Black */
+                {TerminalColors::UNDERLINE,    "\033[4m"}           /* Underline  */
+
+        };
+    }
 
 }

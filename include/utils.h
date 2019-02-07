@@ -40,6 +40,8 @@
 #include <cstdio>
 #include <string>
 #include <cmath>
+#include <map>
+#include <sys/stat.h>
 
 /**
  \brief Utilities class.
@@ -293,7 +295,7 @@ namespace utils {
      \param toReverse String to get a reversed copy.
      \return Reversed string of toReverse.
      */
-     std::string getReverse(std::string toReverse);
+     std::string getReverse(const std::string &toReverse);
 
     /**
      \brief Removes a determined char from the string
@@ -319,7 +321,7 @@ namespace utils {
      \param line Line to convert to array of ints
      \return Pointer to an array of numbers that contains line
      */
-     int *readNumbers(std::string line);
+     int *readNumbers(const std::string &line);
 
     /**
      \brief Quicksort sorting method.
@@ -421,25 +423,49 @@ namespace utils {
      */
      int GetConsStep(float *consValue);
 
-      /**
-     
-     
+     /**
+      * \brief Method to check the existance of a file
+      * @param path Path to the file to check
+      * @return Wheter the file exists or not.
+      */
+     bool fileExists(std::string & path);
+
+    /**
+     * \brief Method to check the existance of a file.
+     * Works exactly as fileExists(std::string & path),
+     * but accepts r-value reference.
+     * @param path Path to the file to check
+     * @return Wheter the file exists or not.
+     */
+    bool fileExists(std::string && path);
+
+    /***
+     *  Method to transform a char to its upper version
+     *  Will return the same char if its already and uppercase char
+     *  Works using bit shifts, to avoid using locale.
+     *
+     *  If char is not a alpha-character, it will return the same char.
+     * @param c Original character
+     * @return upperCase version of the character
      */
      char toUpper(char c);
 
+     namespace TerminalColors {
+         enum terminalColor
+         { RESET, BLACK, RED,
+           GREEN, YELLOW, BLUE,
+           MAGENTA, CYAN, WHITE,
+           BOLD, UNDERLINE };
 
-//     void streamSVG(float *x, float *y,
-//                          int num, std::string *lineName,
-//                          std::string *lineColor, std::string *chartTitle,
-//                          std::string *filename);
-
+         extern std::map<terminalColor, const std::string> colors;
+     }
 };
 
 inline char utils::toUpper(char c) 
 {
     // return std::toupper(c);
     if (c >= 'a' and c <= 'z')
-        return c & (~(1<<5));
+        return (char) (c & (~(1<<5)));
     return c;
 }
 

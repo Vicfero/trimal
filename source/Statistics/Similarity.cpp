@@ -447,7 +447,7 @@ namespace statistics {
 
         std::cout << "#\33[0;32m Statistic :\33[0;1m" << fname << "\33[0m" << std::endl;
 
-        std::cout << std::setw(alig->filename.substr(6, alig->filename.size() - 7).length() + 7)
+        std::cout << std::setw(alig->filename.size())
              << std::setfill('-')
              << std::left << ""
              << std::setfill(' ')
@@ -518,7 +518,7 @@ namespace statistics {
 
         std::cout << "#\33[0;32m Statistic :\33[0;1m" << fname << "\33[0m" << std::endl;
 
-        std::cout << std::setw(alig->filename.substr(6, alig->filename.size() - 7).length() + 7)
+        std::cout << std::setw(alig->filename.size())
              << std::setfill('-')
              << std::left << ""
              << std::setfill(' ')

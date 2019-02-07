@@ -26,6 +26,8 @@ enum VerboseLevel {
 
 enum ErrorCode {
 
+    SomethingWentWrong_reportToDeveloper                = 0,
+
     AlignmentNotLoaded                                  = 1,
 
     NoFormatsSpecified                                  = 2,
@@ -198,20 +200,37 @@ enum ErrorCode {
     AlignmentTypeIsUnknown                              = 95,
 
     MultipleOutputFormatsSameName                       = 96,
+    MultipleInputs                                      = 97, // Not in use
+
+    ReferenceNucleotideNotCorresponding                 = 98,
+
+    OverwrittingSNP                                     = 99,
+
 
     EntropyWindowTooBig                                 = 97,
 
+    MoreDonorsOnLineThanPresented                       = 100,
+
+    MinQualityLesserThan0                               = 101,
+    MinQualityNotRecognized                             = 102,
+
+    MinCoverageLesserThan0                              = 103,
+    MinCoverageNotRecognized                            = 104,
+
+    OnlyValidWithVCF                                    = 105,
+
+    TriedRenamingOutputPreventOverride                  = 106,
 
 
     __MAXERROR,
 };
 
 enum WarningCode {
-    RemovingOnlyGapsSequence                      = 1,
+    RemovingOnlyGapsSequence                    = 1,
 
-    KeepingOnlyGapsSequence                       = 2,
+    KeepingOnlyGapsSequence                     = 2,
 
-    SequenceWillBeCut                        = 3,
+    SequenceWillBeCut                           = 3,
 
     IncludingIndeterminationSymbols             = 4,
 
@@ -220,8 +239,13 @@ enum WarningCode {
     HeaderWillBeCut                             = 6,
     
     DonorAlreadyAdded                           = 7,
-    
-    ReferenceNucleotideNotCorresponding         = 8,
+
+    SNPAlreadApplied                            = 8,
+
+    OverwrittingFile                            = 9,
+
+    RenamingOutputPreventOverride               = 10,
+
 
     __MAXWARNING
 };
@@ -230,6 +254,8 @@ enum InfoCode {
     CuttingSequence                             = 1,
 
     WindowSizeCompareset                        = 2,
+
+    AddingSNP                                   = 3,
 
     __MAXINFO
 };
@@ -352,7 +378,7 @@ public:
      <b> The method wont take care of destroying the array </b>\n
       This allows to reuse the parameter passed.
      */
-    void report(ErrorCode message, char * vars);
+    void report(ErrorCode message, const char *vars);
     /**
      \brief Method to report a Warning. \n
      It will be displayed if
@@ -380,7 +406,7 @@ public:
      <b> The method wont take care of destroying the array </b>\n
       This allows to reuse the parameter passed.
      */
-    void report(WarningCode message, char * vars);
+    void report(WarningCode message, const char *vars);
     /**
      \brief Method to report an Info message. \n
      It will be displayed if
@@ -408,7 +434,7 @@ public:
      <b> The method wont take care of destroying the array </b>\n
       This allows to reuse the parameter passed.
      */
-    void report(InfoCode message, char * vars);
+    void report(InfoCode message, const char *vars);
 
     /**
      \brief Method to output a message behind two checks:
