@@ -191,7 +191,20 @@ For a complete list please see the User Guide or visit http://trimal.cgenomics.o
             in order to be conserved.
         Range: [0 - 100](see User Guide).
 
+    [b][u]Identity Trimming[r]
+    Identity is defined as having the same residue on both positions.
+    It's main purpose is to remove sequences which are too different from the
+        rest of the alignment
+    Both arguments must be provided jointly.
 
+    [b]-residentity <n>[r]
+        Minimum identity of a positions with other positions in the column
+            to be considered a "good position".
+        Range: [0 - 1]. (see User Guide).
+    [b]-seqoverlap <n>[r]
+        Minimum percentage of "good positions" that a sequence must have
+            in order to be conserved.
+        Range: [0 - 100](see User Guide).
 
     [b][u]Manual Trimming - Thresholds[r]
 

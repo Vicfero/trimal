@@ -219,6 +219,11 @@ enum ErrorCode {
 
     TriedRenamingOutputPreventOverride                  = 106,
 
+    SequencesIdentityOutOfRange                         = 107,
+    SequencesIdentityNotRecognized                      = 108,
+    ResidueIdentityOutOfRange                           = 109,
+    ResidueIdentityNotRecognized                        = 110,
+
 
     __MAXERROR,
 };

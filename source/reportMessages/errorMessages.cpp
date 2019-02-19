@@ -336,4 +336,17 @@ const std::map<ErrorCode, const char *> reporting::reportManager::ErrorMessages 
             "[[tag]] Tried to prevent overriding file [tag] but found no luck adding suffixes.\n"
             "Overwritting file [tag]"
             "You should check your output folder."},
+
+    {ErrorCode::ResidueIdentityOutOfRange,
+            "The residue identity value should be between 0 and 1"},
+
+    {ErrorCode::ResidueIdentityNotRecognized,
+            "The residue identity value should be a positive real number between 0 and 100"},
+
+    {ErrorCode::SequencesIdentityOutOfRange,
+            "The sequences identity value should be between 0 and 100"},
+
+    {ErrorCode::SequencesIdentityNotRecognized,
+            "The sequences identity value should be a positive real number between 0 and 100"},
+
 };

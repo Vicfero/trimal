@@ -126,6 +126,9 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
             // Overlap
             checkArgument(residue_overlap_argument)
             checkArgument(sequence_overlap_argument)
+            // Identity
+            checkArgument(residue_identity_argument)
+            checkArgument(sequence_identity_argument)
             // Manual
             checkArgument(seqs_select_argument)
             checkArgument(select_cols_argument)
@@ -620,6 +623,40 @@ inline bool trimAlManager::sequence_overlap_argument(const int *argc, char *argv
     return false;
 }
 
+inline bool trimAlManager::residue_identity_argument(const int *argc, char *argv[], int *i) {
+    if ((!strcmp(argv[*i], "-residentity")) && ((*i) + 1 != *argc) && (residuesIdentity == -1)) {
+        if (utils::isNumber(argv[++*i])) {
+            residuesIdentity = atof(argv[*i]);
+            if ((residuesIdentity < 0) || (residuesIdentity > 1)) {
+                debug.report(ErrorCode::ResidueIdentityOutOfRange);
+                appearErrors = true;
+            }
+        } else {
+            debug.report(ErrorCode::ResidueIdentityNotRecognized);
+            appearErrors = true;
+        }
+        return true;
+    }
+    return false;
+}
+
+inline bool trimAlManager::sequence_identity_argument(const int *argc, char *argv[], int *i) {
+    if ((!strcmp(argv[*i], "-seqidentity")) && ((*i) + 1 != *argc) && (sequenceIdentity == -1)) {
+        if (utils::isNumber(argv[++*i])) {
+            sequenceIdentity = atof(argv[*i]);
+            if ((sequenceIdentity < 0) || (sequenceIdentity > 100)) {
+                debug.report(ErrorCode::SequencesIdentityOutOfRange);
+                appearErrors = true;
+            }
+        } else {
+            debug.report(ErrorCode::SequencesIdentityNotRecognized);
+            appearErrors = true;
+        }
+        return true;
+    }
+    return false;
+}
+
 inline bool trimAlManager::seqs_select_argument(const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-selectseqs")) && !selectSeqs && ((*i + 3) < *argc) && (!strcmp(argv[++*i], "{")) && (!strcmp(argv[*i + 2], "}"))) {
         if ((delSequences = utils::readNumbers(argv[++*i])) == nullptr) {
@@ -1031,6 +1068,7 @@ inline bool trimAlManager::check_arguments_needs(char *argv[]) {
     check_outputs_coincidence();
     check_col_numbering();
     check_residue_and_sequence_overlap();
+    check_residue_and_sequence_identity();
     check_output_relevance();
     check_output_file_with_statistics();
     check_automated_manual_incompatibilities();
@@ -1096,26 +1134,33 @@ inline bool trimAlManager::check_vcf_incompatibility()
 
 
 inline bool trimAlManager::check_automated_manual_incompatibilities() {
-    if ((getComplementary) && (!appearErrors))
-        if (!automatedMethodCount && // Are we not using an automated method?
-            (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && // Neither a threshold method.
-            (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && // Neither a sequence and residues semimanual selection methods
-            (maxIdentity == -1) && (clusters == -1)) // Or complex selection of sequences.
+    if (!appearErrors)
+        if (!automatedMethodCount &&
+            // Are we not using an automated method?
+            (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) &&
+            // Neither a threshold method.
+            (!selectCols) && (!selectSeqs) &&
+            // Neither a manual selection methods
+            (residuesOverlap == -1) && (sequenceOverlap == -1) &&
+            // Neither overlap trimming
+            (residuesIdentity == -1) && (sequenceIdentity == -1) &&
+            // Neither overlap trimming
+            (maxIdentity == -1) && (clusters == -1))
+            // Or complex selection of sequences.
         {
-            debug.report(ErrorCode::TrimmingMethodNeeded, new std::string[1]{"-complementary"});
-            appearErrors = true;
-            return true;
-        }
+            if (getComplementary)
+            {
+                debug.report(ErrorCode::TrimmingMethodNeeded, new std::string[1]{"-complementary"});
+                appearErrors = true;
+                return true;
+            }
+            if (terminalOnly)
+            {
+                debug.report(ErrorCode::TrimmingMethodNeeded, new std::string[1]{"-terminalonly"});
+                appearErrors = true;
+                return true;
+            }
 
-    if ((terminalOnly) && (!appearErrors))
-        if (!automatedMethodCount && // Are we not using an automated method?
-            (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && // Neither a threshold method.
-            (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && // Neither a sequence and residues semimanual selection methods
-            (maxIdentity == -1) && (clusters == -1)) // Or complex selection of sequences.
-        {
-            debug.report(ErrorCode::TrimmingMethodNeeded, new std::string[1]{"-terminalonly"});
-            appearErrors = true;
-            return true;
         }
     return false;
 }
@@ -1144,15 +1189,17 @@ inline bool trimAlManager::check_file_aligned() {
     if ((!appearErrors) && (infile != nullptr)) {
 
         if (// Are we requesting an automated method ? or...
-                (automatedMethodCount || 
+            (automatedMethodCount ||
             // Are we requesting any manual threshold method ? or...
-                (gapThreshold != -1) || (consistencyThreshold != -1) || (similarityThreshold != -1) || 
+            (gapThreshold != -1) || (consistencyThreshold != -1) || (similarityThreshold != -1) ||
             // Are we selecting columns or sequences ? or...
-                (selectCols) || (selectSeqs) || 
+            (selectCols) || (selectSeqs) ||
             // Are we using max overlap between sequences ? or...
-                (residuesOverlap != -1) || (sequenceOverlap != -1) || 
+            (residuesOverlap != -1) || (sequenceOverlap != -1) ||
+            // Are we using max identity between sequences ? or...
+            (residuesIdentity != -1) || (sequenceIdentity != -1) ||
             // Are we asking for any stats?
-                (stats < 0)) 
+            (stats < 0))
             &&
             // Then we need the alignment to be aligned; 
             //  If not, we should report the error
@@ -1263,6 +1310,21 @@ inline bool trimAlManager::check_residue_and_sequence_overlap() {
     return false;
 }
 
+inline bool trimAlManager::check_residue_and_sequence_identity() {
+    if (!appearErrors) {
+        if ((residuesIdentity != -1) && (sequenceIdentity == -1)) {
+            debug.report(ErrorCode::SequenceAndResiduesOverlapMutuallyNeeded, new std::string[1]{"residues identity"});
+            appearErrors = true;
+            return true;
+        } else if ((residuesIdentity == -1) && (sequenceIdentity != -1)) {
+            debug.report(ErrorCode::SequenceAndResiduesOverlapMutuallyNeeded, new std::string[1]{"sequences identity"});
+            appearErrors = true;
+            return true;
+        }
+    }
+    return false;
+}
+
 inline bool trimAlManager::check_output_relevance() {
     if (((htmlOutFile != nullptr) ||
          (svgOutFile != nullptr) ||
@@ -1274,7 +1336,9 @@ inline bool trimAlManager::check_output_relevance() {
             // Neither using thresholds? and...
                 (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && (consistencyThreshold == -1) && 
             // Neither selecting columns or sequences? and...
-                (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && 
+                (!selectCols) && (!selectSeqs) &&
+                (residuesOverlap == -1) && (sequenceOverlap == -1) &&
+                (residuesIdentity == -1) && (sequenceIdentity == -1) &&
             // Neither using other selecting methods? and...
                 (maxIdentity == -1) && (clusters == -1))
         {
@@ -1824,9 +1888,17 @@ inline void trimAlManager::CleanSequences() {
 
     // Remove by Overlap
     } else if ((residuesOverlap != -1) && (sequenceOverlap != -1)) {
-        tempAlig = origAlig->Cleaning->cleanSpuriousSeq(
+        tempAlig = origAlig->Cleaning->cleanSpuriousOverlapSeq(
                 residuesOverlap,
                 sequenceOverlap / 100.0F,
+                /* getComplementary*/ false
+        );
+
+    // Remove by Identity
+    } else if ((residuesIdentity != -1) && (sequenceIdentity != -1)) {
+        tempAlig = origAlig->Cleaning->cleanSpuriousIdentitySeq(
+                residuesIdentity,
+                sequenceIdentity / 100.0F,
                 /* getComplementary*/ false
         );
     }

@@ -824,10 +824,10 @@ Alignment *Cleaner::cleanCompareFile(const float cutpoint,
     return ret;
 }
 
-bool Cleaner::calculateSpuriousVector(float overlap, float *spuriousVector) {
+bool Cleaner::calculateSpuriousOverlapVector(float overlap, float *spuriousVector) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
-    StartTiming("bool Cleaner::calculateSpuriousVector(float overlap, float *spuriousVector) ");
+    StartTiming("bool Cleaner::calculateSpuriousOverlapVector(float overlap, float *spuriousVector) ");
 
     int i, j, k, seqValue, ovrlap, hit;
     char indet;
@@ -902,11 +902,71 @@ bool Cleaner::calculateSpuriousVector(float overlap, float *spuriousVector) {
     return true;
 }
 
-
-Alignment *Cleaner::cleanSpuriousSeq(float overlapColumn, float minimumOverlap, bool complementary) {
+bool Cleaner::calculateSpuriousIdentityVector(float overlap, float *spuriousVector) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
-    StartTiming("Alignment *Cleaner::cleanSpuriousSeq(float overlapColumn, float minimumOverlap, bool complementary) ");
+    StartTiming("bool Cleaner::calculateSpuriousVector(float overlap, float *spuriousVector) ");
+
+    int i, j, k, seqValue, ovrlap, hit;
+    char indet;
+
+    float floatOverlap = overlap * float(alig->originalNumberOfSequences - 1);
+    ovrlap = int(overlap * (alig->originalNumberOfSequences - 1));
+
+    if (floatOverlap > float(ovrlap))
+        ovrlap++;
+
+    if (spuriousVector == nullptr)
+        return false;
+    // Depending on the kind of Alignment, we have
+    // different indetermination symbol
+    if (alig->getAlignmentType() & SequenceTypes::AA)
+        indet = 'X';
+    else
+        indet = 'N';
+    // For each Alignment's sequence, computes its overlap
+    for (i = 0, seqValue = 0; i < alig->originalNumberOfSequences; i++, seqValue = 0) {
+        // For each Alignment's column, computes the overlap
+        // between the selected sequence and the other ones
+        for (j = 0; j < alig->originalNumberOfResidues; j++) {
+
+            // For sequences are before the sequence selected
+            for (k = 0, hit = 0; k < i; k++) {
+                if(std::toupper(alig->sequences[i][j]) == std::toupper(alig->sequences[k][j]) &&
+                   (std::toupper(alig->sequences[k][j]) != indet) &&
+                   (alig->sequences[k][j] != '-'))
+                    hit++;
+            }
+
+            // For sequences are after the sequence selected
+            for (k = (i + 1); k < alig->originalNumberOfSequences; k++) {
+                if(std::toupper(alig->sequences[i][j]) == std::toupper(alig->sequences[k][j]) &&
+                   (std::toupper(alig->sequences[k][j]) != indet) &&
+                   (alig->sequences[k][j] != '-'))
+                    hit++;
+            }
+            // Finally, if the hit's number divided by number of
+            // sequences minus one is greater or equal than
+            // overlap's value, compute a sequence hit
+            if (hit >= ovrlap)
+                seqValue++;
+        }
+
+        // For each Alignment's sequence, computes its spurious's
+        // or overlap's value as the column's hits -for that
+        // sequence- divided by column's number.
+        spuriousVector[i] = ((float) seqValue / alig->originalNumberOfResidues);
+    }
+
+    // If there is not problem in the method, return true
+    return true;
+}
+
+
+Alignment *Cleaner::cleanSpuriousOverlapSeq(float overlapColumn, float minimumOverlap, bool complementary) {
+    // Create a timer that will report times upon its destruction
+    //	which means the end of the current scope.
+    StartTiming("Alignment *Cleaner::cleanSpuriousOverlapSeq(float overlapColumn, float minimumOverlap, bool complementary) ");
 
     float *overlapVector;
     Alignment *newAlig;
@@ -914,11 +974,34 @@ Alignment *Cleaner::cleanSpuriousSeq(float overlapColumn, float minimumOverlap, 
     overlapVector = new float[alig->originalNumberOfSequences];
 
     // Compute the overlap's vector using the overlap column's value
-    if (!calculateSpuriousVector(overlapColumn, overlapVector))
+    if (!calculateSpuriousOverlapVector(overlapColumn, overlapVector))
         return nullptr;
 
     // Select and remove the sequences with a overlap less than threshold's overlap and create a new alignment
     newAlig = cleanOverlapSeq(minimumOverlap, overlapVector, complementary);
+
+    // Deallocate local memory
+    delete[] overlapVector;
+
+    return newAlig;
+}
+
+Alignment *Cleaner::cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary) {
+    // Create a timer that will report times upon its destruction
+    //	which means the end of the current scope.
+    StartTiming("Alignment *Cleaner::cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary) ");
+
+    float *overlapVector;
+    Alignment *newAlig;
+
+    overlapVector = new float[alig->originalNumberOfSequences];
+
+    // Compute the overlap's vector using the overlap column's value
+    if (!calculateSpuriousIdentityVector(overlapColumn, overlapVector))
+        return nullptr;
+
+    // Select and remove the sequences with a overlap less than threshold's overlap and create a new alignment
+    newAlig = cleanOverlapSeq(minimumIdentity, overlapVector, complementary);
 
     // Deallocate local memory
     delete[] overlapVector;

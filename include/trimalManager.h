@@ -66,6 +66,8 @@ public:
         consistencyThreshold    = -1,
         residuesOverlap         = -1,
         sequenceOverlap         = -1,
+        residuesIdentity        = -1,
+        sequenceIdentity        = -1,
         maxIdentity             = -1,
         minCoverage             = -1,
         minQuality              = -1;
@@ -169,6 +171,8 @@ private: // Parse Arguments Methods
         bool automated1_argument            (const int* argc, char* argv[], int* currentArg);
         bool residue_overlap_argument       (const int* argc, char* argv[], int* currentArg);
         bool sequence_overlap_argument      (const int* argc, char* argv[], int* currentArg);
+        bool residue_identity_argument      (const int* argc, char* argv[], int* currentArg);
+        bool sequence_identity_argument     (const int* argc, char* argv[], int* currentArg);
         bool seqs_select_argument           (const int* argc, char* argv[], int* currentArg);
         bool max_identity_argument          (const int* argc, char* argv[], int* currentArg);
         bool clusters_argument              (const int* argc, char* argv[], int* currentArg);
@@ -213,6 +217,7 @@ private: // Process Arguments Methods
         bool check_outputs_coincidence();
         bool check_col_numbering();
         bool check_residue_and_sequence_overlap();
+        bool check_residue_and_sequence_identity();
         bool check_output_relevance();
         bool check_output_file_with_statistics();
         bool check_block_size();

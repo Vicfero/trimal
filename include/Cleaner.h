@@ -246,7 +246,20 @@ public:
                 <b> False </b> otherwise.\n
       This should happen only if you pass a null pointer instead of a spuriousVector.
 */
-    bool calculateSpuriousVector(float overlap, float *spuriousVector);
+    bool calculateSpuriousOverlapVector(float overlap, float *spuriousVector);
+
+    /**
+      \brief Method to compute the identity values.\n
+        See Alignment::identity
+      \param overlap
+       Overlap threshold.
+      \param[out] spuriousIdentityVector
+       Pointer to the spuriousIdentityVector to fill.
+      \return   <b> True </b> if the calculation went ok.\n
+                <b> False </b> otherwise.\n
+      This should happen only if you pass a null pointer instead of a spuriousIdentityVector.
+*/
+    bool calculateSpuriousIdentityVector(float overlap, float *spuriousVector);
 
      /**
       \brief Method to remove sequences missaligned
@@ -266,7 +279,19 @@ public:
       \return Pointer to the cleaned alignment.
       \
       */
-    Alignment *cleanSpuriousSeq(float overlapColumn, float minimumOverlap, bool complementary);
+    Alignment *cleanSpuriousOverlapSeq(float overlapColumn, float minimumOverlap, bool complementary);     /**
+      \brief Method to remove sequences miss aligned
+       Same as ::cleanSpuriousOverlapSeq but uses identity instead of overlap.
+      \param overlapColumn
+      Minimum similarity value that a residue needs to be considered a hit.
+      \param minimumIdentity
+      Minimum proportion of hits that a sequence needs to be kept in the new alignment.
+      \param complementary
+      Whether or not to return the complementary version of the trimmed alignment.
+      \return Pointer to the cleaned alignment.
+      \
+      */
+    Alignment *cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary);
 
      /**
       \brief Method that carries the gappyout approach.\n
