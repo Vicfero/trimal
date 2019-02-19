@@ -7,7 +7,7 @@
 
 //#define TimingReport true
 
-#define BenchmarkTimes false
+#define BenchmarkTimes true
 #define BenchmarkMemory false
 
 #define TimingReport BenchmarkTimes || BenchmarkMemory

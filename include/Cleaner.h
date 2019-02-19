@@ -282,7 +282,7 @@ public:
     Alignment *cleanSpuriousOverlapSeq(float overlapColumn, float minimumOverlap, bool complementary);     /**
       \brief Method to remove sequences miss aligned
        Same as ::cleanSpuriousOverlapSeq but uses identity instead of overlap.
-      \param overlapColumn
+      \param identityColumn
       Minimum similarity value that a residue needs to be considered a hit.
       \param minimumIdentity
       Minimum proportion of hits that a sequence needs to be kept in the new alignment.
@@ -291,7 +291,7 @@ public:
       \return Pointer to the cleaned alignment.
       \
       */
-    Alignment *cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary);
+    Alignment *cleanSpuriousIdentitySeq(float identityColumn, float minimumIdentity, bool complementary);
 
      /**
       \brief Method that carries the gappyout approach.\n

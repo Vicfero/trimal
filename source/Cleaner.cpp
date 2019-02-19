@@ -905,7 +905,7 @@ bool Cleaner::calculateSpuriousOverlapVector(float overlap, float *spuriousVecto
 bool Cleaner::calculateSpuriousIdentityVector(float overlap, float *spuriousVector) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
-    StartTiming("bool Cleaner::calculateSpuriousVector(float overlap, float *spuriousVector) ");
+    StartTiming("bool Cleaner::calculateSpuriousIdentityVector(float overlap, float *spuriousVector) ");
 
     int i, j, k, seqValue, ovrlap, hit;
     char indet;
@@ -986,25 +986,25 @@ Alignment *Cleaner::cleanSpuriousOverlapSeq(float overlapColumn, float minimumOv
     return newAlig;
 }
 
-Alignment *Cleaner::cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary) {
+Alignment *Cleaner::cleanSpuriousIdentitySeq(float identityColumn, float minimumIdentity, bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
-    StartTiming("Alignment *Cleaner::cleanSpuriousIdentitySeq(float overlapColumn, float minimumIdentity, bool complementary) ");
+    StartTiming("Alignment *Cleaner::cleanSpuriousIdentitySeq(float identityColumn, float minimumIdentity, bool complementary) ");
 
-    float *overlapVector;
+    float *identityVector;
     Alignment *newAlig;
 
-    overlapVector = new float[alig->originalNumberOfSequences];
+    identityVector = new float[alig->originalNumberOfSequences];
 
     // Compute the overlap's vector using the overlap column's value
-    if (!calculateSpuriousIdentityVector(overlapColumn, overlapVector))
+    if (!calculateSpuriousIdentityVector(identityColumn, identityVector))
         return nullptr;
 
     // Select and remove the sequences with a overlap less than threshold's overlap and create a new alignment
-    newAlig = cleanOverlapSeq(minimumIdentity, overlapVector, complementary);
+    newAlig = cleanOverlapSeq(minimumIdentity, identityVector, complementary);
 
     // Deallocate local memory
-    delete[] overlapVector;
+    delete[] identityVector;
 
     return newAlig;
 }
