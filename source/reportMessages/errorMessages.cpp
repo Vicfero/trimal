@@ -120,7 +120,7 @@ const std::map<ErrorCode, const char *> reporting::reportManager::ErrorMessages 
             "Only one method to chose sequences can be applied: (-selectseqs || -clusters || -maxIdentity"},
 
     {ErrorCode::CombinationAmongTrimmingMethods,
-            "Only one trimming method can be used at the same time, either automatic or manual"},
+            "Only one trimming method can be used at the same time, either automatic or manual. Manual argument: \"[tag]\" + \"[tag]\""},
 
     {ErrorCode::AutomathicMethodAndBlock,
             "Combination between automatic methods and -block options is not allowed"},
@@ -349,4 +349,6 @@ const std::map<ErrorCode, const char *> reporting::reportManager::ErrorMessages 
     {ErrorCode::SequencesIdentityNotRecognized,
             "The sequences identity value should be a positive real number between 0 and 100"},
 
+    {ErrorCode::MoreThanOneAutomatedMethod,
+            "More than one automated method has been requested."},
 };

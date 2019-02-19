@@ -223,6 +223,7 @@ enum ErrorCode {
     SequencesIdentityNotRecognized                      = 108,
     ResidueIdentityOutOfRange                           = 109,
     ResidueIdentityNotRecognized                        = 110,
+    MoreThanOneAutomatedMethod                          = 112,
 
 
     __MAXERROR,
