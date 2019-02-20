@@ -683,76 +683,64 @@ Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, con
     return newAlig;
 }
 
-Alignment * Cleaner::cleanSimilaritySequences(float threshold)
+Alignment * Cleaner::cleanSimilaritySequences(float threshold, statistics::similarityMatrix * simMatrix)
 {
-    if (alig->Statistics->similarity == nullptr)
-        alig->Statistics->similarity = new statistics::Similarity(alig);
-
-    if (alig->Statistics->similarity->matrixIdentity == nullptr)
-        alig->Statistics->similarity->calculateMatrixIdentity();
-
-    float **& identMatrix = alig->Statistics->similarity->matrixIdentity;
-
-    statistics::similarityMatrix *& simMatrix = alig->Statistics->similarity->simMatrix;
-
-    char indet = alig->getAlignmentType() & SequenceTypes::AA ? 'X' : 'N';
-
-    auto *newAlig = new Alignment(*alig);
-
+#define deb false
+#if deb
     typedef std::pair<int, float> score;
-
     std::vector<score> values;
+#endif
+    char indeterminationChar = alig->getAlignmentType() & SequenceTypes::AA ? 'X' : 'N';
+
+    auto *newAlignment = new Alignment(*alig);
 
     char res0, res1;
 
-    float tmpScore, tmpIdent, seqScore, seqIdent;
+    float tmpScore, seqScore;
 
     for (int sequence0 = 0; sequence0 < alig->originalNumberOfSequences; sequence0++)
     {
         seqScore = 0.0F;
         for(int residue = 0; residue < alig->originalNumberOfResidues; residue++)
         {
-            tmpScore = tmpIdent = 0.0F;
+            tmpScore = 0.0F;
             res0 = utils::toUpper(alig->sequences[sequence0][residue]);
-            if (res0 == '-' || res0 == indet) continue;
+            if (res0 == '-' || res0 == indeterminationChar) continue;
             for(int sequence1 = 0; sequence1 < alig->originalNumberOfSequences; sequence1++)
             {
                 res1 = utils::toUpper(alig->sequences[sequence1][residue]);
-                if (res1 == '-' || res1 == indet || sequence0 == sequence1) continue;
-                tmpScore += simMatrix->getDistance(res0, res1) * identMatrix[sequence0][sequence1];
-                tmpIdent += identMatrix[sequence0][sequence1];
+                if (res1 == '-' || res1 == indeterminationChar || sequence0 == sequence1) continue;
+                tmpScore += simMatrix->getDistance(res0, res1);
             }
-            if (tmpIdent != 0)
-            {
-                seqScore += tmpScore / alig->originalNumberOfSequences;
-                seqScore /= tmpIdent;
-            }
-            else
-            {
-                seqScore = 0.0F;
-            }
+            seqScore += tmpScore / alig->originalNumberOfSequences;
         }
         seqScore /= alig->originalNumberOfResidues;
-        values.emplace_back(sequence0, expf(-seqScore));
-        if (seqScore < threshold) newAlig->saveSequences[sequence0] = -1;
+        seqScore = expf(-seqScore);
+#if deb
+        values.emplace_back(sequence0, seqScore);
+#endif
+        if (seqScore < threshold) newAlignment->saveSequences[sequence0] = -1;
     }
-
+#if deb
     std::sort(values.begin(), values.end(),
               [](const score & a, const score & b)
               { return b.second > a.second; });
 
+    int longName = -1;
+    for(int i = 0; i < alig->originalNumberOfSequences; i++)
+        longName = std::max(longName, (int)alig->seqsName[i].length());
+
     for(score pair : values)
-    {
         debug.log(INFO)
-            << std::setw(20) << alig->seqsName[pair.first]
+            << std::setw(longName + 5) << alig->seqsName[pair.first]
             << "\t\t"
             << std::fixed << std::setprecision(10) << pair.second
             << "\t\t"
             << ((pair.second < threshold) ? "X" : "O")
             << "\n";
-    }
-
-    return newAlig;
+#endif
+    return newAlignment;
+#undef deb
 }
 
 Alignment *Cleaner::cleanOverlapSeq(float minimumOverlap, float *overlapSeq, bool complementary) {

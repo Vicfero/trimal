@@ -1922,7 +1922,7 @@ inline void trimAlManager::CleanSequences() {
 
     // Remove by Similarity
     } else if (similaritySeqThreshold != -1) {
-        tempAlig = origAlig->Cleaning->cleanSimilaritySequences(similaritySeqThreshold);
+        tempAlig = origAlig->Cleaning->cleanSimilaritySequences(similaritySeqThreshold, this->similMatrix);
     }
 
     // We'll use singleAlig as input for the next cleaning step.

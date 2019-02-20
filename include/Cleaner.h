@@ -162,7 +162,7 @@ public:
      * @param threshold
      * @return
      */
-    Alignment * cleanSimilaritySequences(float threshold);
+    Alignment * cleanSimilaritySequences(float threshold, statistics::similarityMatrix * simMatrix);
 
 
      /**
