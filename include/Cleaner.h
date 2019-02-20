@@ -154,6 +154,17 @@ public:
     Alignment *cleanStrict(int gapCut, const int *gInCol, float simCut,
                               const float *MDK_W, bool complementary, bool variable);
 
+
+    /***
+     * Method to remove sequences whose similarity score is lesser than threshold.
+     * The similarity score for a sequence is calculated by averaging the similarity
+     * scores of all its residues
+     * @param threshold
+     * @return
+     */
+    Alignment * cleanSimilaritySequences(float threshold);
+
+
      /**
       \brief Method to trim an alignment based on a minimum sequence overlap threshold.\n
        The method selects a combination of parameters

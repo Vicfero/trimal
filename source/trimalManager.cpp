@@ -103,6 +103,7 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
             // Thresholds
             checkArgument(gap_threshold_argument)
             checkArgument(similarity_threshold_argument)
+            checkArgument(similarity_seq_threshold_argument)
             checkArgument(consistency_threshold_argument)
             checkArgument(conservation_threshold_argument)
 
@@ -458,6 +459,25 @@ inline bool trimAlManager::similarity_threshold_argument(const int *argc, char *
         if (utils::isNumber(argv[++*i])) {
             similarityThreshold = atof(argv[*i]);
             if ((similarityThreshold < 0) || (similarityThreshold > 1)) {
+                debug.report(ErrorCode::SimilarityThresholdOutOfRange);
+                appearErrors = true;
+            }
+        } else {
+            debug.report(ErrorCode::SimilarityThresholdNotRecognized);
+            appearErrors = true;
+        }
+        return true;
+    }
+    return false;
+}
+
+inline bool trimAlManager::similarity_seq_threshold_argument(const int *argc, char *argv[], int *i) {
+    if ((!strcmp(argv[*i], "-simseqthreshold") || !strcmp(argv[*i], "-siset")) &&
+        ((*i) + 1 != *argc) && (similaritySeqThreshold == -1)) {
+        if (utils::isNumber(argv[++*i])) {
+            similaritySeqThreshold = atof(argv[*i]);
+            if ((similaritySeqThreshold < 0) || (similaritySeqThreshold > 1)) {
+                // TODO SISET
                 debug.report(ErrorCode::SimilarityThresholdOutOfRange);
                 appearErrors = true;
             }
@@ -944,7 +964,8 @@ inline bool trimAlManager::check_select_cols_and_seqs_incompatibilities() {
 inline bool trimAlManager::check_thresholds_incompatibilities() {
     if ((gapThreshold != -1)            || 
         (similarityThreshold != -1)     || 
-        (consistencyThreshold != -1)    || 
+        (similaritySeqThreshold != -1)     ||
+        (consistencyThreshold != -1)    ||
         (conservationThreshold != -1)
         ) 
     {
@@ -965,6 +986,8 @@ inline bool trimAlManager::check_thresholds_incompatibilities() {
                 debug.report(ErrorCode::CombinationAmongTrimmingMethods,  new std::string[2]{autom,"-gt"});
             if (similarityThreshold != -1)
                 debug.report(ErrorCode::CombinationAmongTrimmingMethods,  new std::string[2]{autom,"-st"});
+            if (similaritySeqThreshold != -1)
+                debug.report(ErrorCode::CombinationAmongTrimmingMethods,  new std::string[2]{autom,"-siset"});
             if (consistencyThreshold != -1)
                 debug.report(ErrorCode::CombinationAmongTrimmingMethods,  new std::string[2]{autom,"-ct"});
             if (conservationThreshold != -1)
@@ -1104,6 +1127,17 @@ inline bool trimAlManager::check_combinations_among_thresholds_incompatibility()
             return true;
         }
     }
+    if (similaritySeqThreshold != -1 && (
+            consistencyThreshold != -1 ||
+            conservationThreshold != -1 ||
+            gapThreshold != -1 ||
+            similarityThreshold != -1
+            ))
+    {
+        debug.report(ErrorCode::CombinationAmongThresholdsMethods);
+        appearErrors = true;
+        return true;
+    }
     return false;
 }
 
@@ -1137,7 +1171,9 @@ inline bool trimAlManager::check_vcf_incompatibility()
 inline bool trimAlManager::check_automated_manual_incompatibilities() {
     if ((getComplementary) && (!appearErrors))
         if (!automatedMethodCount && // Are we not using an automated method?
-            (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && // Neither a threshold method.
+            (gapThreshold == -1) && (conservationThreshold == -1) &&
+            (similarityThreshold == -1) && // Neither a threshold method.
+            (similaritySeqThreshold == -1) && // Neither a threshold method.
             (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && // Neither a sequence and residues semimanual selection methods
             (maxIdentity == -1) && (clusters == -1)) // Or complex selection of sequences.
         {
@@ -1148,7 +1184,9 @@ inline bool trimAlManager::check_automated_manual_incompatibilities() {
 
     if ((terminalOnly) && (!appearErrors))
         if (!automatedMethodCount && // Are we not using an automated method?
-            (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && // Neither a threshold method.
+            (gapThreshold == -1) && (conservationThreshold == -1) &&
+            (similarityThreshold == -1) && // Neither a threshold method.
+            (similaritySeqThreshold == -1) && // Neither a threshold method.
             (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && // Neither a sequence and residues semimanual selection methods
             (maxIdentity == -1) && (clusters == -1)) // Or complex selection of sequences.
         {
@@ -1185,7 +1223,9 @@ inline bool trimAlManager::check_file_aligned() {
         if (// Are we requesting an automated method ? or...
                 (automatedMethodCount || 
             // Are we requesting any manual threshold method ? or...
-                (gapThreshold != -1) || (consistencyThreshold != -1) || (similarityThreshold != -1) || 
+                (gapThreshold != -1) || (consistencyThreshold != -1) ||
+                (similarityThreshold != -1) ||
+                (similaritySeqThreshold != -1) ||
             // Are we selecting columns or sequences ? or...
                 (selectCols) || (selectSeqs) || 
             // Are we using max overlap between sequences ? or...
@@ -1210,7 +1250,10 @@ inline bool trimAlManager::check_file_aligned() {
 
 inline bool trimAlManager::check_similarity_matrix() {
     if ((matrixFile != nullptr) && (!appearErrors)) {
-        if ((!strict) && (!strictplus) && (!automated1) && (similarityThreshold == -1) && (!ssc) && (!sst)) {
+        if ((!strict) && (!strictplus) && (!automated1) &&
+            (similarityThreshold == -1) &&
+            (similaritySeqThreshold == -1) &&
+            (!ssc) && (!sst)) {
             debug.report(ErrorCode::MatrixGivenWithNoMethodToUseIt);
             appearErrors = true;
             return true;
@@ -1274,7 +1317,8 @@ inline bool trimAlManager::check_col_numbering() {
                 (gapThreshold == -1) && 
                 (conservationThreshold == -1) && 
                 (similarityThreshold == -1) && 
-                (consistencyThreshold == -1) && 
+                (similaritySeqThreshold == -1) &&
+                (consistencyThreshold == -1) &&
             // Neither selecting any column or sequence?
                 (!selectCols) && (!selectSeqs))
         {
@@ -1311,7 +1355,9 @@ inline bool trimAlManager::check_output_relevance() {
             // Are we not using any automated method? and...
                 !automatedMethodCount && 
             // Neither using thresholds? and...
-                (gapThreshold == -1) && (conservationThreshold == -1) && (similarityThreshold == -1) && (consistencyThreshold == -1) && 
+                (gapThreshold == -1) && (conservationThreshold == -1) &&
+                (similarityThreshold == -1) && (consistencyThreshold == -1) &&
+                (similaritySeqThreshold == -1) &&
             // Neither selecting columns or sequences? and...
                 (!selectCols) && (!selectSeqs) && (residuesOverlap == -1) && (sequenceOverlap == -1) && 
             // Neither using other selecting methods? and...
@@ -1339,11 +1385,13 @@ inline bool trimAlManager::check_output_file_with_statistics() {
     if ((stats < 0) && (!appearErrors)) {
         stats--; 
 
-        if (
+        if ((
             // If we are using an automated method
                 ((automatedMethodCount) ||
             // Or a manual threshold
-                (gapThreshold != -1) || (conservationThreshold != -1) || (similarityThreshold != -1)) 
+                (gapThreshold != -1) || (conservationThreshold != -1) ||
+                (similarityThreshold != -1)) ||
+                (similaritySeqThreshold != -1))
             // We need the outFile to be specified.
             && (outfile == nullptr)) 
         {
@@ -1756,7 +1804,10 @@ inline bool trimAlManager::create_or_use_similarity_matrix() {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("inline bool trimAlManager::create_or_use_similarity_matrix() ");
-    if ((strict) || (strictplus) || (automated1) || (similarityThreshold != -1.0) || (ssc == 1) || (sst == 1)) {
+    if ((strict) || (strictplus) || (automated1) ||
+        (similarityThreshold != -1.0F) ||
+        (similaritySeqThreshold != -1.0F) ||
+        (ssc == 1) || (sst == 1)) {
         similMatrix = new statistics::similarityMatrix();
 
     // Load Matrix
@@ -1868,6 +1919,10 @@ inline void trimAlManager::CleanSequences() {
                 sequenceOverlap / 100.0F,
                 /* getComplementary*/ false
         );
+
+    // Remove by Similarity
+    } else if (similaritySeqThreshold != -1) {
+        tempAlig = origAlig->Cleaning->cleanSimilaritySequences(similaritySeqThreshold);
     }
 
     // We'll use singleAlig as input for the next cleaning step.

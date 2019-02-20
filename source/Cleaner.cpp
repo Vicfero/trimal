@@ -683,6 +683,78 @@ Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, con
     return newAlig;
 }
 
+Alignment * Cleaner::cleanSimilaritySequences(float threshold)
+{
+    if (alig->Statistics->similarity == nullptr)
+        alig->Statistics->similarity = new statistics::Similarity(alig);
+
+    if (alig->Statistics->similarity->matrixIdentity == nullptr)
+        alig->Statistics->similarity->calculateMatrixIdentity();
+
+    float **& identMatrix = alig->Statistics->similarity->matrixIdentity;
+
+    statistics::similarityMatrix *& simMatrix = alig->Statistics->similarity->simMatrix;
+
+    char indet = alig->getAlignmentType() & SequenceTypes::AA ? 'X' : 'N';
+
+    auto *newAlig = new Alignment(*alig);
+
+    typedef std::pair<int, float> score;
+
+    std::vector<score> values;
+
+    char res0, res1;
+
+    float tmpScore, tmpIdent, seqScore, seqIdent;
+
+    for (int sequence0 = 0; sequence0 < alig->originalNumberOfSequences; sequence0++)
+    {
+        seqScore = 0.0F;
+        for(int residue = 0; residue < alig->originalNumberOfResidues; residue++)
+        {
+            tmpScore = tmpIdent = 0.0F;
+            res0 = utils::toUpper(alig->sequences[sequence0][residue]);
+            if (res0 == '-' || res0 == indet) continue;
+            for(int sequence1 = 0; sequence1 < alig->originalNumberOfSequences; sequence1++)
+            {
+                res1 = utils::toUpper(alig->sequences[sequence1][residue]);
+                if (res1 == '-' || res1 == indet || sequence0 == sequence1) continue;
+                tmpScore += simMatrix->getDistance(res0, res1) * identMatrix[sequence0][sequence1];
+                tmpIdent += identMatrix[sequence0][sequence1];
+            }
+            if (tmpIdent != 0)
+            {
+                seqScore += tmpScore / alig->originalNumberOfSequences;
+                seqScore /= tmpIdent;
+            }
+            else
+            {
+                seqScore = 0.0F;
+            }
+        }
+        seqScore /= alig->originalNumberOfResidues;
+        values.emplace_back(sequence0, expf(-seqScore));
+        if (seqScore < threshold) newAlig->saveSequences[sequence0] = -1;
+    }
+
+    std::sort(values.begin(), values.end(),
+              [](const score & a, const score & b)
+              { return b.second > a.second; });
+
+    for(score pair : values)
+    {
+        debug.log(INFO)
+            << std::setw(20) << alig->seqsName[pair.first]
+            << "\t\t"
+            << std::fixed << std::setprecision(10) << pair.second
+            << "\t\t"
+            << ((pair.second < threshold) ? "X" : "O")
+            << "\n";
+    }
+
+    return newAlig;
+}
+
 Alignment *Cleaner::cleanOverlapSeq(float minimumOverlap, float *overlapSeq, bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.

@@ -63,6 +63,7 @@ public:
         conservationThreshold   = -1,
         gapThreshold            = -1,
         similarityThreshold     = -1,
+        similaritySeqThreshold  = -1,
         consistencyThreshold    = -1,
         residuesOverlap         = -1,
         sequenceOverlap         = -1,
@@ -156,6 +157,7 @@ private: // Parse Arguments Methods
         bool back_trans_argument            (const int* argc, char* argv[], int* currentArg);
         bool gap_threshold_argument         (const int* argc, char* argv[], int* currentArg);
         bool similarity_threshold_argument  (const int* argc, char* argv[], int* currentArg);
+        bool similarity_seq_threshold_argument  (const int* argc, char* argv[], int* currentArg);
         bool consistency_threshold_argument (const int* argc, char* argv[], int* currentArg);
         bool conservation_threshold_argument(const int* argc, char* argv[], int* currentArg);
         bool select_cols_argument           (const int* argc, char* argv[], int* currentArg);
