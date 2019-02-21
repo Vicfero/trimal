@@ -166,6 +166,13 @@ For a complete list please see the User Guide or visit http://trimal.cgenomics.o
         A column pattern is the same as another pattern if they contain the
             same proportion of different residues, disregarding the order
             or what residues are present on the column.
+    [b]-complexpattern[r]
+        Explore the column patterns.
+        A column pattern is the same as another pattern if they contain the
+            same proportion of residue - count, disregarding the order.
+        This is different from -pattern option in the way it takes into account
+            not only the raw count, but the associated residue.
+        This will produce more patterns than the -pattern option.
 
 
     [b]-clusters <n>[r]
