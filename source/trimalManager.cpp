@@ -133,6 +133,8 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
 
             checkArgument(max_identity_argument)
             checkArgument(clusters_argument)
+
+            checkArgument(patternCleaning)
         }
 
         // Modifiers
@@ -157,7 +159,6 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
             checkArgument(ignore_filter_argument)
             checkArgument(min_quality_argument)
             checkArgument(min_coverage_argument)
-            checkArgument(patternCleaning)
         }
 
         // Skip the verbosity option, as it was checked before the loop
