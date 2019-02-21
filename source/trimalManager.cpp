@@ -1774,7 +1774,6 @@ inline bool trimAlManager::create_or_use_similarity_matrix() {
     StartTiming("inline bool trimAlManager::create_or_use_similarity_matrix() ");
     if ((strict) ||
         (strictplus)  ||
-        (patternTrim) ||
         (automated1)  ||
         (similarityThreshold != -1.0) || (ssc == 1) || (sst == 1)) {
         similMatrix = new statistics::similarityMatrix();
