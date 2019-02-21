@@ -1607,3 +1607,84 @@ Cleaner::Cleaner(Alignment *parent, Cleaner *mold) {
     left_boundary = mold->left_boundary;
     right_boundary = mold->right_boundary;
 }
+
+Alignment *Cleaner::cleanByPattern() {
+
+    // Typedef what is a pattern
+    typedef std::vector<int> pattern;
+
+    // Create two vectors: Seen patterns, and count of seen patterns
+    std::vector<pattern> patternCollection;
+    std::vector<int> patternCollectionCount;
+
+    // Create a temporal object to store track of residue - count
+    std::map<char, int> temporalPattern;
+
+    // Create vector to store the pattern ID of each column
+    int * patternVector = new int[alig->originalNumberOfResidues];
+
+    // Iterate over all residues
+    for(int residue = 0; residue < alig->numberOfResidues; residue++)
+    {
+        // Reset the temporal pattern
+        temporalPattern.clear();
+
+        // Increase the count of each residue - per sequence
+        for(int sequence = 0; sequence < alig->numberOfSequences; sequence++)
+            temporalPattern[alig->sequences[sequence][residue]]++;
+
+        // Create a pattern to compare
+        pattern currentPattern;
+
+        // Fill the currentPattern with the raw count on the temporal pattern
+        for (auto & patternPair : temporalPattern)
+            currentPattern.emplace_back(patternPair.second);
+
+        // Sort the pattern to allow direct comparison.
+        std::sort(currentPattern.begin(), currentPattern.end());
+
+        // Iterator variable i.
+        int i;
+
+        // Compare with each already seen pattern. If found, break the loop
+        for (i = 0; i < patternCollection.size(); i++)
+            if (currentPattern == patternCollection[i])
+                break;
+
+        // Check if the loop hasn't been early broken.
+        // If so, the current pattern is unseen.
+        if (i == patternCollection.size())
+        {
+            patternCollection.emplace_back(currentPattern);
+            patternCollectionCount.emplace_back(0);
+        }
+
+        // Set the current pattern ID to the iterator variable.
+        // If new, i == patternCollection.size() - 1,
+        //      as the size has been increased
+        patternVector[residue] = i;
+
+        // Increase the count of each pattern.
+        patternCollectionCount[i]++;
+    }
+
+    // Report results - Pattern per column
+
+    debug.log(INFO) << "Pattern per column:\n";
+
+    for (int i = 0; i < alig->numberOfResidues; i++)
+        debug.log(INFO) << patternVector[i] << " ";
+
+    debug.log(INFO) << "\n";
+
+    // Report results - Pattern count
+
+    debug.log(INFO) << "Pattern Count:\n";
+
+    for (int i = 0; i < patternCollection.size(); i++)
+        debug.log(INFO) << i << "\t" << patternCollectionCount[i] << "\n";
+
+    // Return the original alignment, as this is still exploratory
+
+    return alig;
+}

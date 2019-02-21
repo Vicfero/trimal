@@ -445,6 +445,14 @@ public:
       */
     void computeComplementaryAlig(bool residues, bool sequences);
 
+    /***
+     * Method to clean an alignment by pattern detection.
+     * @todo Currently the method only detects and reports patterns.
+     * The returned alignment is the same as the original.
+     * @return Newly alignment trimmed by pattern detection
+     */
+    Alignment *cleanByPattern();
+
 private:
 
     friend class Alignment;

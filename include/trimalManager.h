@@ -43,7 +43,8 @@ public:
         strict              = false,
         strictplus          = false, 
         automated1          = false,
-        sgc                 = false, 
+        patternTrim         = false,
+        sgc                 = false,
         sgt                 = false, 
         ssc                 = false, 
         sst                 = false,
@@ -186,6 +187,7 @@ private: // Parse Arguments Methods
         bool ignore_filter_argument         (const int* argc, char* argv[], int* currentArg);
         bool min_quality_argument           (const int* argc, char* argv[], int* currentArg);
         bool min_coverage_argument          (const int* argc, char* argv[], int* currentArg);
+        bool patternCleaning                (const int* argc, char* argv[], int* currentArg);
 
 public:
     bool processArguments(char* argv[]);

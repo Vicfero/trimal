@@ -161,6 +161,13 @@ For a complete list please see the User Guide or visit http://trimal.cgenomics.o
             based on similarity statistics. (see User Guide).
         Optimized for Maximum Likelihood phylogenetic tree reconstruction.
 
+    [b]-pattern[r]
+        Explore the column patterns.
+        A column pattern is the same as another pattern if they contain the
+            same proportion of different residues, disregarding the order
+            or what residues are present on the column.
+
+
     [b]-clusters <n>[r]
         Get the most Nth representatives sequences from a given alignment.
         Range: [1 - (Number of sequences)]
