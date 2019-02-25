@@ -119,7 +119,7 @@ namespace ngs {
             bool checkIn = true;
             // Iterate over the list of contigs
             for (const std::string & contig : contigs) {
-                int i;
+                uint i;
                 // Iterate all over the sources
                 for (i = 0; i < sources.size(); i++) {
                     // And early skip on first coincidence
@@ -166,7 +166,7 @@ namespace ngs {
 
                 // For each donor, add a copy of
                 //      the reference sequence and the donor name
-                for (int i = 1; i < donors.size() + 1; i++) {
+                for (uint i = 1; i < donors.size() + 1; i++) {
                     nA->sequences[i] = seq;
                     nA->seqsName[i] = donors[i - 1];
                 }
@@ -305,7 +305,7 @@ namespace ngs {
             // Create a feature object to reuse
             vcfFeature feature = vcfFeature();
 
-            for (int vcfIndex = 0; vcfIndex < filenames.size(); vcfIndex++) {
+            for (uint vcfIndex = 0; vcfIndex < filenames.size(); vcfIndex++) {
 
                 // Open the VCF file
                 std::ifstream infile(filenames[vcfIndex]);
@@ -326,7 +326,7 @@ namespace ngs {
                     // Check if feature-referred contig is found
 
                     // contigIndex is also sourcesIndex
-                    int contigIndex;
+                    uint contigIndex;
                     {
                         for (contigIndex = 0; contigIndex < contigs.size(); contigIndex++)
                         {
@@ -362,7 +362,7 @@ namespace ngs {
                         continue;
 
                     // Iterate over all donors
-                    for (int donorID = 0; donorID < feature.donorsInfo.size(); donorID++)
+                    for (ulong donorID = 0; donorID < feature.donorsInfo.size(); donorID++)
                     {
                         // Sanity check to prevent OutOfBounds
                         if (donorID >= donorsPositions[vcfIndex].size())
@@ -494,7 +494,7 @@ namespace ngs {
                 memmove(fname, field_info, strlen(field_info));
                 fname[std::strlen(field_info)] = '\0';
 
-                int U;
+                uint U;
                 // Check if the contig has already been added.
                 for (U = 0; U < contigs.size(); U++)
                     if (contigs[U] == fname)
@@ -522,7 +522,7 @@ namespace ngs {
                 memmove(fname, token, strlen(token));
                 fname[std::strlen(token)] = '\0';
 
-                int U;
+                uint U;
 
                 // Check every other donor already added.
                 for (U = 0; U < donors.size(); U++) {
@@ -559,7 +559,7 @@ namespace ngs {
             char *line = new char[bufSize];
 
             // Obtain contigs and donors from all VCF files.
-            for (int C = 0; C < filenames.size(); C++) {
+            for (uint C = 0; C < filenames.size(); C++) {
 
                 // Add a new vector<int>, which holds the sequence index
                 //      for all donors present on this VCF

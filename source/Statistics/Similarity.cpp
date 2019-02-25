@@ -42,7 +42,7 @@ namespace statistics {
         alig = parentAlignment;
 
         MDK = new float[alig->originalNumberOfResidues];
-        utils::initlVect(MDK, alig->originalNumberOfResidues, 0);
+        utils::initlVect(MDK, (uint)alig->originalNumberOfResidues, 0.0F);
 
         // Initialize the similarity matrix to nullptr.
         simMatrix = nullptr;
@@ -393,21 +393,21 @@ namespace statistics {
         // Sort a copy of the vector containing the similarity values after applying
         // any windows methods. Take the columns value that it lower than the minimum
         // similarity threshold set by the user
-        utils::copyVect(getMdkWindowedVector(), vectAux, alig->originalNumberOfResidues);
+        utils::copyVect(getMdkWindowedVector(), vectAux, (uint)alig->originalNumberOfResidues);
         utils::quicksort(vectAux, 0, alig->originalNumberOfResidues - 1);
 
         for (i = alig->originalNumberOfResidues - 1; i >= 0; i--)
             if (vectAux[i] < conservationPct)
                 break;
-        cuttingPoint_SimilThreshold = vectAux[i];
+        cuttingPoint_SimilThreshold = (double)vectAux[i];
 
         // It is possible that due to number casting, we get a number out of the
         // vector containing the similarity values - it is not reporting an overflow
         // situation but giving back a 0 when it should be a number equal (or closer)
         // to 1.
-        highestPos = (int) ((double) (alig->originalNumberOfResidues - 1) * (100.0 - baseLine) / 100.0);
+        highestPos = (int) ((double) (alig->originalNumberOfResidues - 1) * (100.0 - (double)baseLine) / 100.0);
         highestPos = highestPos < (alig->originalNumberOfResidues - 1) ? highestPos : alig->originalNumberOfResidues - 1;
-        cuttingPoint_MinimumConserv = vectAux[highestPos];
+        cuttingPoint_MinimumConserv = (double)vectAux[highestPos];
 
         delete[] vectAux;
 

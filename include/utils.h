@@ -59,18 +59,11 @@ namespace utils {
      This method is used to initialize
      all positions of a vector with a given value.
      */
-     void initlVect(int *vector, int tam, int valor);
+     template <class T>
+     void initlVect(T *vector, uint tam, T valor) {
+       for (unsigned int i = 0; i < tam; i++) vector[i] = valor;
+     }
 
-    /**
-     \brief Vector initialization.
-     \param [out] vector The vector that will be initialized.
-     \param tam The size of the vector.
-     \param valor The initialization value of all positions of the vector.
-
-     This method is used to initialize
-     all positions of a vector with a given value.
-     */
-     void initlVect(float *vector, int tam, float valor);
 
     /**
      \brief Integer vector copying.
@@ -80,17 +73,10 @@ namespace utils {
 
      This method copies integer vector 1 to integer vector 2.
       */
-     void copyVect(int *vect1, int *vect2, int tam);
-
-    /**
-     \brief Float vector copying.
-     \param vect1 Vector that we want to copy.
-     \param [out] vect2 Destination vector of the copy.
-     \param tam Vectors size.
-
-     This method copies float vector 1 to float vector 2.
-     */
-     void copyVect(float *vect1, float *vect2, int tam);
+     template <class T>
+     void copyVect(T *vect1, T *vect2, uint tam) {
+        for (unsigned int i = 0; i < tam; i++) vect2[i] = vect1[i];
+     }
 
     /**
      \brief Round double to inferior integer method.
@@ -127,27 +113,11 @@ namespace utils {
 
      This method returns the maximum between the two numbers given as parameters.
      */
-     int max(int x, int y);
-
-    /**
-     \brief Maximum of two numbers method.
-     \param x The first number.
-     \param y The second number.
-     \return The maximum between the two given numbers.
-
-     This method returns the maximum between the two numbers given as parameters.
-     */
-     float max(float x, float y);
-
-    /**
-     \brief Maximum of two numbers method.
-     \param x The first number.
-     \param y The second number.
-     \return The maximum between the two given numbers.
-
-     This method returns the maximum between the two numbers given as parameters.
-     */
-     double max(double x, double y);
+     template <typename T>
+     T max(T x, T y) {
+        if (x > y) return x;
+        else return y;
+     }
 
     /**
      \brief Minimum of two numbers method.
@@ -157,27 +127,11 @@ namespace utils {
 
      This method returns the minimum between the two numbers given as parameters.
      */
-     int min(int x, int y);
-
-    /**
-     \brief Minimum of two numbers method.
-     \param x The first number.
-     \param y The second number.
-     \return The minumum between the two given numbers.
-
-     This method returns the minimum between the two numbers given as parameters.
-     */
-     float min(float x, float y);
-
-    /**
-     \brief Minimum of two numbers method.
-     \param x The first number.
-     \param y The second number.
-     \return The minumum between the two given numbers.
-
-     This method returns the minimum between the two numbers given as parameters.
-     */
-     double min(double x, double y);
+     template <typename T>
+     T min(T x, T y) {
+        if (x < y) return x;
+        else return y;
+     }
 
     /**
      \brief String-is-number checking.

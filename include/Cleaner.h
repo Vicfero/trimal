@@ -364,7 +364,7 @@ public:
       \param original Alignment to apply the removal.
        Minimum size a block has to be to be kept.
       */
-    void removeSmallerBlocks(int blockSize, Alignment &original);
+     void removeSmallerBlocks(int blockSize);
 
 
      /**

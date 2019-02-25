@@ -64,7 +64,7 @@ namespace ngs {
 
             StringVector donorsInfo {};
 
-            vcfFeature() : position(0), quality(0.0F), filter(false), readDepthIndex(0)
+            vcfFeature() : filter(false), position(0), quality(0.0F), readDepthIndex(0)
             {
                 ref = nullptr;
                 alt = nullptr;

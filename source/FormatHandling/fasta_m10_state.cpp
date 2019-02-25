@@ -4,12 +4,12 @@
 #include "utils.h"
 
 namespace FormatHandling {
-int fasta_m10_state::CheckAlignment(std::istream* origin)
+int fasta_m10_state::CheckAlignment([[maybe_unused]] std::istream* origin)
 {
     return 0;
 }
 
-Alignment* fasta_m10_state::LoadAlignment(const std::string &filename)
+Alignment* fasta_m10_state::LoadAlignment([[maybe_unused]] const std::string &filename)
 {
     return nullptr;
 }
@@ -18,7 +18,7 @@ bool fasta_m10_state::SaveAlignment(const Alignment &alignment, std::ostream *ou
 {
     /* Generate output alignment in FASTA format. Sequences can be unaligned. */
 
-    int i, j, k, maxLongName;
+    ulong i, j, k, maxLongName;
     std::string *tmpMatrix;
     bool lastcharIsnewline = true;
 
@@ -29,7 +29,7 @@ bool fasta_m10_state::SaveAlignment(const Alignment &alignment, std::ostream *ou
     {
         /* Allocate local memory for generating output alignment */
         tmpMatrix = new std::string[alignment.originalNumberOfSequences];
-        for(i = 0; i < alignment.originalNumberOfSequences; i++)
+        for(i = 0; i < (ulong)alignment.originalNumberOfSequences; i++)
             tmpMatrix[i] = utils::getReverse(alignment.sequences[i]);
     }
     else tmpMatrix = alignment.sequences;
@@ -38,7 +38,7 @@ bool fasta_m10_state::SaveAlignment(const Alignment &alignment, std::ostream *ou
      * 10 characters) or not, get maximum sequence name length. Consider those
      * cases when the user has asked to keep original sequence header */
     maxLongName = 0;
-    for(i = 0; i < alignment.originalNumberOfSequences; i++)
+    for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++)
     {
         if (alignment.saveSequences && alignment.saveSequences[i] == -1) continue;
         if (!Machine->keepHeader)
@@ -52,22 +52,22 @@ bool fasta_m10_state::SaveAlignment(const Alignment &alignment, std::ostream *ou
         debug.report(WarningCode::HeaderWillBeCut, new std::string[1]{std::string(name)});
     }
     /* Print alignment. First, sequences name id and then the sequences itself */
-    for(i = 0; i < alignment.originalNumberOfSequences; i++) {
+    for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++) {
         
         if (alignment.saveSequences != nullptr && alignment.saveSequences[i] == -1) continue;
         
         if (!Machine->keepHeader)
-            (*output) << ">" << alignment.seqsName[i].substr(0, maxLongName) << "\n";
+            (*output) << ">" << alignment.seqsName[i].substr(0, (unsigned)maxLongName) << "\n";
         
         else if (alignment.seqsInfo != nullptr)
-            (*output) << ">" << alignment.seqsInfo[i].substr(0, maxLongName) << "\n";
+            (*output) << ">" << alignment.seqsInfo[i].substr(0, (unsigned)maxLongName) << "\n";
         
         
-        for (j = 0, k = 0; j < alignment.sequences[i].length(); j++)
+        for (j = 0, k = 0; (ulong)j < (ulong)alignment.sequences[i].length(); j++)
         {
             if (alignment.saveResidues != nullptr && alignment.saveResidues[j] == -1) 
             {
-                if (!lastcharIsnewline && j == alignment.sequences[i].length() -1 ) 
+                if (!lastcharIsnewline && (unsigned)j == alignment.sequences[i].length() -1 )
                 {
                     (*output) << "\n";
                     lastcharIsnewline = true;

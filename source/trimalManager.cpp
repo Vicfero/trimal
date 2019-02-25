@@ -207,7 +207,7 @@ inline bool trimAlManager::check_arguments_incompatibilities() {
     return appearErrors;
 }
 
-inline void trimAlManager::verbosity_argument(const int *argc, char *argv[]) {
+inline void trimAlManager::verbosity_argument([[maybe_unused]] const int *argc, char *argv[]) {
     for (int i = 1; i < *argc; i++) {
         if (!strcmp(argv[i], "--verbosity") || !strcmp(argv[i], "-v")) {
             if ((i + 1) != *argc) {
@@ -235,7 +235,7 @@ inline void trimAlManager::verbosity_argument(const int *argc, char *argv[]) {
     }
 }
 
-inline void trimAlManager::help_arguments(const int *argc, char *argv[], int *i) {
+inline void trimAlManager::help_arguments([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-h") || !strcmp(argv[*i], "-help")) {
         menu();
         examples();
@@ -254,7 +254,7 @@ inline void trimAlManager::help_arguments(const int *argc, char *argv[], int *i)
     }
 }
 
-inline bool trimAlManager::in_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::in_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-in") && ((*i) + 1 != *argc) && (infile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         infile = new char[argumentLength + 1];
@@ -267,7 +267,7 @@ inline bool trimAlManager::in_argument(const int *argc, char *argv[], int *i) {
     return false;
 }
 
-inline bool trimAlManager::vcf_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::vcf_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-vcf") && ((*i) + 1 != *argc)) {
         vcfs = new std::vector<std::string>();
         while (((*i) + 1 != *argc)) {
@@ -284,7 +284,7 @@ inline bool trimAlManager::vcf_argument(const int *argc, char *argv[], int *i) {
     return false;
 }
 
-inline bool trimAlManager::out_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::out_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-out")) && ((*i) + 1 != *argc) && (outfile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         outfile = new char[argumentLength + 1];
@@ -294,7 +294,7 @@ inline bool trimAlManager::out_argument(const int *argc, char *argv[], int *i) {
     return false;
 }
 
-inline bool trimAlManager::html_out_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::html_out_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-htmlout")) && ((*i) + 1 != *argc) && (htmlOutFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         htmlOutFile = new char[argumentLength + 1];
@@ -304,7 +304,7 @@ inline bool trimAlManager::html_out_argument(const int *argc, char *argv[], int 
     return false;
 }
 
-inline bool trimAlManager::timetracker_out_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::timetracker_out_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-timetrackerout")) && ((*i) + 1 != *argc)) {
         (*i) += 1;
         return true;
@@ -312,7 +312,7 @@ inline bool trimAlManager::timetracker_out_argument(const int *argc, char *argv[
     return false;
 }
 
-inline bool trimAlManager::svg_out_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::svg_out_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-svgout")) && ((*i) + 1 != *argc) && (svgOutFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         svgOutFile = new char[argumentLength + 1];
@@ -322,7 +322,7 @@ inline bool trimAlManager::svg_out_argument(const int *argc, char *argv[], int *
     return false;
 }
 
-inline bool trimAlManager::svg_stats_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::svg_stats_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-svgstats")) && ((*i) + 1 != *argc) && (svgStatsOutFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         svgStatsOutFile = new char[argumentLength + 1];
@@ -341,7 +341,7 @@ inline bool trimAlManager::svg_stats_argument(const int *argc, char *argv[], int
     }
 
 
-inline bool trimAlManager::out_format_arguments(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::out_format_arguments([[maybe_unused]] const int *argc, char *argv[], int *i) {
     // Detect formats using the ReadWriteMachineState (RWMS) method
     //  Store the formats desired on 'oformats' list, which
     //  will be passed to the RWMS
@@ -378,7 +378,7 @@ inline bool trimAlManager::out_format_arguments(const int *argc, char *argv[], i
 
 #undef LegacyFormatArgumentWrapper
 
-inline bool trimAlManager::matrix_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::matrix_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-matrix") && ((*i) + 1 != *argc) && (matrixFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         matrixFile = new char[argumentLength + 1];
@@ -396,7 +396,7 @@ inline bool trimAlManager::matrix_argument(const int *argc, char *argv[], int *i
     return false;
 }
 
-inline bool trimAlManager::compareset_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::compareset_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-compareset") && ((*i) + 1 != *argc) && (compareset == nullptr)) {
         // Check if file can be opened
         compare.open(argv[++*i], std::ifstream::in);
@@ -411,7 +411,7 @@ inline bool trimAlManager::compareset_argument(const int *argc, char *argv[], in
     return false;
 }
 
-inline bool trimAlManager::force_select_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::force_select_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-forceselect") && ((*i) + 1 != *argc) && (forceFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         forceFile = new char[argumentLength + 1];
@@ -425,7 +425,7 @@ inline bool trimAlManager::force_select_argument(const int *argc, char *argv[], 
     return false;
 }
 
-inline bool trimAlManager::back_trans_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::back_trans_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-backtrans") && ((*i) + 1 != *argc) && (backtransFile == nullptr)) {
         argumentLength = strlen(argv[++*i]);
         backtransFile = new char[argumentLength + 1];
@@ -440,7 +440,7 @@ inline bool trimAlManager::back_trans_argument(const int *argc, char *argv[], in
     return false;
 }
 
-inline bool trimAlManager::gap_threshold_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::gap_threshold_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-gapthreshold") || !strcmp(argv[*i], "-gt")) && ((*i) + 1 != *argc) && (gapThreshold == -1)) {
         if (utils::isNumber(argv[++*i])) {
             gapThreshold = 1. - atof(argv[*i]);
@@ -457,7 +457,7 @@ inline bool trimAlManager::gap_threshold_argument(const int *argc, char *argv[],
     return false;
 }
 
-inline bool trimAlManager::similarity_threshold_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::similarity_threshold_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-simthreshold") || !strcmp(argv[*i], "-st")) && ((*i) + 1 != *argc) && (similarityThreshold == -1)) {
         if (utils::isNumber(argv[++*i])) {
             similarityThreshold = atof(argv[*i]);
@@ -474,7 +474,7 @@ inline bool trimAlManager::similarity_threshold_argument(const int *argc, char *
     return false;
 }
 
-inline bool trimAlManager::consistency_threshold_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::consistency_threshold_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-conthreshold") || !strcmp(argv[*i], "-ct")) && ((*i) + 1 != *argc) && (consistencyThreshold == -1)) {
         if (utils::isNumber(argv[++*i])) {
             consistencyThreshold = atof(argv[*i]);
@@ -491,7 +491,7 @@ inline bool trimAlManager::consistency_threshold_argument(const int *argc, char 
     return false;
 }
 
-inline bool trimAlManager::conservation_threshold_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::conservation_threshold_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-cons")) && ((*i) + 1 != *argc) && (conservationThreshold == -1)) {
         if (utils::isNumber(argv[++*i])) {
             conservationThreshold = atof(argv[*i]);
@@ -509,7 +509,7 @@ inline bool trimAlManager::conservation_threshold_argument(const int *argc, char
     return false;
 }
 
-inline bool trimAlManager::select_cols_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::select_cols_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
 
     if (!strcmp(argv[*i], "-selectcols") &&
         !selectCols &&
@@ -527,7 +527,7 @@ inline bool trimAlManager::select_cols_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::no_gaps_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::no_gaps_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-nogaps") && (!nogaps)) {
         nogaps = true;
         return true;
@@ -535,7 +535,7 @@ inline bool trimAlManager::no_gaps_argument(const int *argc, char *argv[], int *
     return false;
 }
 
-inline bool trimAlManager::no_all_gaps_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::no_all_gaps_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-noallgaps") && (!noallgaps)) {
         noallgaps = true;
         return true;
@@ -543,7 +543,7 @@ inline bool trimAlManager::no_all_gaps_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::keep_seqs_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::keep_seqs_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-keepseqs") && (!keepSeqs)) {
         keepSeqs = true;
         return true;
@@ -551,7 +551,7 @@ inline bool trimAlManager::keep_seqs_argument(const int *argc, char *argv[], int
     return false;
 }
 
-inline bool trimAlManager::keep_header_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::keep_header_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-keepheader") && (!formatManager.keepHeader)) {
         formatManager.keepHeader = true;
         return true;
@@ -559,7 +559,7 @@ inline bool trimAlManager::keep_header_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::gappy_out_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::gappy_out_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-gappyout") && (!gappyout)) {
         gappyout = true;
         return true;
@@ -567,7 +567,7 @@ inline bool trimAlManager::gappy_out_argument(const int *argc, char *argv[], int
     return false;
 }
 
-inline bool trimAlManager::strict_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::strict_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-strict") && (!strict)) {
         strict = true;
         return true;
@@ -575,7 +575,7 @@ inline bool trimAlManager::strict_argument(const int *argc, char *argv[], int *i
     return false;
 }
 
-inline bool trimAlManager::strict_plus_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::strict_plus_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-strictplus")) && (!strictplus)) {
         strictplus = true;
         return true;
@@ -583,7 +583,7 @@ inline bool trimAlManager::strict_plus_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::automated1_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::automated1_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-automated1")) && (!automated1)) {
         automated1 = true;
         return true;
@@ -591,7 +591,7 @@ inline bool trimAlManager::automated1_argument(const int *argc, char *argv[], in
     return false;
 }
 
-inline bool trimAlManager::residue_overlap_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::residue_overlap_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-resoverlap")) && ((*i) + 1 != *argc) && (residuesOverlap == -1)) {
         if (utils::isNumber(argv[++*i])) {
             residuesOverlap = atof(argv[*i]);
@@ -608,7 +608,7 @@ inline bool trimAlManager::residue_overlap_argument(const int *argc, char *argv[
     return false;
 }
 
-inline bool trimAlManager::sequence_overlap_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::sequence_overlap_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-seqoverlap")) && ((*i) + 1 != *argc) && (sequenceOverlap == -1)) {
         if (utils::isNumber(argv[++*i])) {
             sequenceOverlap = atof(argv[*i]);
@@ -625,7 +625,7 @@ inline bool trimAlManager::sequence_overlap_argument(const int *argc, char *argv
     return false;
 }
 
-inline bool trimAlManager::seqs_select_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::seqs_select_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-selectseqs")) && !selectSeqs && ((*i + 3) < *argc) && (!strcmp(argv[++*i], "{")) && (!strcmp(argv[*i + 2], "}"))) {
         if ((delSequences = utils::readNumbers(argv[++*i])) == nullptr) {
             debug.report(ErrorCode::SelectSeqsNotRecognized);
@@ -637,7 +637,7 @@ inline bool trimAlManager::seqs_select_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::max_identity_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::max_identity_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-maxidentity")) && ((*i) + 1 != *argc) && (maxIdentity == -1)) {
 
         if (utils::isNumber(argv[++*i])) {
@@ -656,7 +656,7 @@ inline bool trimAlManager::max_identity_argument(const int *argc, char *argv[], 
     return false;
 }
 
-inline bool trimAlManager::clusters_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::clusters_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-clusters")) && ((*i) + 1 != *argc) && (clusters == -1)) {
         if (utils::isNumber(argv[++*i])) {
             clusters = atoi(argv[*i]);
@@ -674,7 +674,7 @@ inline bool trimAlManager::clusters_argument(const int *argc, char *argv[], int 
     return false;
 }
 
-inline bool trimAlManager::terminal_only_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::terminal_only_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-terminalonly")) && (!terminalOnly)) {
         terminalOnly = true;
         return true;
@@ -682,7 +682,7 @@ inline bool trimAlManager::terminal_only_argument(const int *argc, char *argv[],
     return false;
 }
 
-inline bool trimAlManager::window_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::window_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-w") && ((*i) + 1 != *argc) && (windowSize == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             windowSize = atoi(argv[++*i]);
@@ -699,7 +699,7 @@ inline bool trimAlManager::window_argument(const int *argc, char *argv[], int *i
     return false;
 }
 
-inline bool trimAlManager::gap_window_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::gap_window_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-gw") && ((*i) + 1 != *argc) && (gapWindow == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             gapWindow = atoi(argv[++*i]);
@@ -716,7 +716,7 @@ inline bool trimAlManager::gap_window_argument(const int *argc, char *argv[], in
     return false;
 }
 
-inline bool trimAlManager::similarity_window_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::similarity_window_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-sw") && ((*i) + 1 != *argc) && (similarityWindow == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             similarityWindow = atoi(argv[++*i]);
@@ -734,7 +734,7 @@ inline bool trimAlManager::similarity_window_argument(const int *argc, char *arg
     return false;
 }
 
-inline bool trimAlManager::consistency_window_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::consistency_window_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-cw") && ((*i) + 1 != *argc) && (consistencyWindow == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             consistencyWindow = atoi(argv[++*i]);
@@ -751,7 +751,7 @@ inline bool trimAlManager::consistency_window_argument(const int *argc, char *ar
     return false;
 }
 
-inline bool trimAlManager::block_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::block_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-block") && ((*i) + 1 != *argc) && (blockSize == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             blockSize = atoi(argv[++*i]);
@@ -786,7 +786,7 @@ inline bool trimAlManager::block_argument(const int *argc, char *argv[], int *i)
         } else return false; \
     }
 
-inline bool trimAlManager::stats_arguments(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::stats_arguments([[maybe_unused]] const int *argc, char *argv[], int *i) {
     stat_check(sgc)
     stat_check(sgt)
     stat_check(ssc)
@@ -807,7 +807,7 @@ inline bool trimAlManager::stats_arguments(const int *argc, char *argv[], int *i
 
 #undef stat_check
 
-inline bool trimAlManager::complementary_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::complementary_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-complementary")) && !getComplementary) {
         getComplementary = true;
         return true;
@@ -815,7 +815,7 @@ inline bool trimAlManager::complementary_argument(const int *argc, char *argv[],
     return false;
 }
 
-inline bool trimAlManager::col_numbering_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::col_numbering_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-colnumbering")) && !columnNumbering) {
         columnNumbering = true;
         return true;
@@ -823,7 +823,7 @@ inline bool trimAlManager::col_numbering_argument(const int *argc, char *argv[],
     return false;
 }
 
-inline bool trimAlManager::split_by_stop_codon_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::split_by_stop_codon_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-splitbystopcodon")) && !splitByStopCodon) {
         splitByStopCodon = true;
         return true;
@@ -831,7 +831,7 @@ inline bool trimAlManager::split_by_stop_codon_argument(const int *argc, char *a
     return false;
 }
 
-inline bool trimAlManager::ignore_stop_codon_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::ignore_stop_codon_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-ignorestopcodon")) && !ignoreStopCodon) {
         ignoreStopCodon = true;
         return true;
@@ -839,7 +839,7 @@ inline bool trimAlManager::ignore_stop_codon_argument(const int *argc, char *arg
     return false;
 }
 
-inline bool trimAlManager::ignore_filter_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::ignore_filter_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if ((!strcmp(argv[*i], "-ignorefilter")) && !ignoreFilter) {
         ignoreFilter = true;
         return true;
@@ -847,7 +847,7 @@ inline bool trimAlManager::ignore_filter_argument(const int *argc, char *argv[],
     return false;
 }
 
-inline bool trimAlManager::min_quality_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::min_quality_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-minquality") && ((*i) + 1 != *argc) && (minQuality == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             minQuality = atof(argv[++*i]);
@@ -864,7 +864,7 @@ inline bool trimAlManager::min_quality_argument(const int *argc, char *argv[], i
     return false;
 }
 
-inline bool trimAlManager::min_coverage_argument(const int *argc, char *argv[], int *i) {
+inline bool trimAlManager::min_coverage_argument([[maybe_unused]] const int *argc, char *argv[], int *i) {
     if (!strcmp(argv[*i], "-mincoverage") && ((*i) + 1 != *argc) && (minCoverage == -1)) {
         if (utils::isNumber(argv[*i + 1])) {
             minCoverage = atof(argv[++*i]);
@@ -1067,7 +1067,7 @@ inline bool trimAlManager::check_stats_incompatibilities() {
     return appearErrors;
 }
 
-inline bool trimAlManager::check_arguments_needs(char *argv[]) {
+inline bool trimAlManager::check_arguments_needs([[maybe_unused]] char *argv[]) {
     StartTiming("bool trimAlManager::check_arguments_needs(char *argv[])");
     check_force_selection();
     check_input_file_with_coding_sequences_argument();
@@ -1255,7 +1255,7 @@ inline bool trimAlManager::check_outputs_coincidence() {
     }};
 
 
-    for (int i = 0, x = 0; i < outFiles.size(); i++) {
+    for (uint i = 0, x = 0; i < outFiles.size(); i++) {
         if (outFiles.at(i) != nullptr)
             for (x = i + 1; x < outFiles.size(); x++) {
                 if (outFiles.at(x) != nullptr)
@@ -1762,7 +1762,7 @@ inline bool trimAlManager::create_or_use_similarity_matrix() {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("inline bool trimAlManager::create_or_use_similarity_matrix() ");
-    if ((strict) || (strictplus) || (automated1) || (similarityThreshold != -1.0) || (ssc == 1) || (sst == 1)) {
+    if ((strict) || (strictplus) || (automated1) || (similarityThreshold != -1.0F) || (ssc == 1) || (sst == 1)) {
         similMatrix = new statistics::similarityMatrix();
 
     // Load Matrix

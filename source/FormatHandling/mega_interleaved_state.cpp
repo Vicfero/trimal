@@ -240,12 +240,12 @@ Alignment* mega_interleaved_state::LoadAlignment(const std::string &filename)
     return alig;
 }
 
-bool mega_interleaved_state::SaveAlignment(const Alignment &alignment, std::ostream *output)
+bool mega_interleaved_state::SaveAlignment([[maybe_unused]] const Alignment &alignment, [[maybe_unused]] std::ostream *output)
 {
     return false;
 }
 
-bool mega_interleaved_state::RecognizeOutputFormat(const std::string &FormatName)
+bool mega_interleaved_state::RecognizeOutputFormat([[maybe_unused]] const std::string &FormatName)
 {
     return false;
 }

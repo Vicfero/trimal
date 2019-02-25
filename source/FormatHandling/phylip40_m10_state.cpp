@@ -4,12 +4,12 @@
 #include "utils.h"
 
 namespace FormatHandling {
-int phylip40_m10_state::CheckAlignment(std::istream* origin)
+int phylip40_m10_state::CheckAlignment([[maybe_unused]] std::istream* origin)
 {
     return 0;
 }
 
-Alignment* phylip40_m10_state::LoadAlignment(const std::string &filename)
+Alignment* phylip40_m10_state::LoadAlignment([[maybe_unused]] const std::string &filename)
 {
     return nullptr;
 }
@@ -46,7 +46,7 @@ bool phylip40_m10_state::SaveAlignment(const Alignment &alignment, std::ostream 
      * 10 characters) or not, get maximum sequence name length */
     maxLongName = PHYLIPDISTANCE;
     for(i = 0; (i < alignment.originalNumberOfSequences); i++)
-        maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     if (maxLongName > PHYLIPDISTANCE) {
         maxLongName = PHYLIPDISTANCE;

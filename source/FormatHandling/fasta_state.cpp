@@ -121,7 +121,7 @@ bool fasta_state::SaveAlignment(const Alignment &alignment,
 {
     /* Generate output alignment in FASTA format. Sequences can be unaligned. */
 
-    int i, j, k, maxLongName;
+    unsigned long i, j, k, maxLongName;
     std::string *tmpMatrix;
     bool lastcharIsnewline = true;
 
@@ -132,7 +132,7 @@ bool fasta_state::SaveAlignment(const Alignment &alignment,
     {
         /* Allocate local memory for generating output alignment */
         tmpMatrix = new std::string[alignment.originalNumberOfSequences];
-        for(i = 0; i < alignment.originalNumberOfSequences; i++)
+        for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++)
             tmpMatrix[i] = utils::getReverse(alignment.sequences[i]);
     }
     else tmpMatrix = alignment.sequences;
@@ -141,7 +141,7 @@ bool fasta_state::SaveAlignment(const Alignment &alignment,
      * 10 characters) or not, get maximum sequence name length. Consider those
      * cases when the user has asked to keep original sequence header */
     maxLongName = 0;
-    for(i = 0; i < alignment.originalNumberOfSequences; i++)
+    for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++)
     {
         if (alignment.saveSequences && alignment.saveSequences[i] == -1)
             continue;
@@ -152,7 +152,7 @@ bool fasta_state::SaveAlignment(const Alignment &alignment,
     }
 
     /* Print alignment. First, sequences name id and then the sequences itself */
-    for(i = 0; i < alignment.originalNumberOfSequences; i++) {
+    for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++) {
         
         if (alignment.saveSequences != nullptr &&
             alignment.saveSequences[i] == -1)

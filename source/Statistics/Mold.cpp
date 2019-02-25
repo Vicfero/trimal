@@ -165,7 +165,7 @@ namespace statistics {
         return valuesWindow == nullptr ? values : valuesWindow;
     }
 
-    void Mold::printByColumn(bool calculateRelative) {
+    void Mold::printByColumn([[maybe_unused]]bool calculateRelative) {
 
         int i, size = 20;
 

@@ -246,7 +246,7 @@ bool phylip32_state::SaveAlignment(const Alignment &alignment, std::ostream *out
     maxLongName = PHYLIPDISTANCE;
     for(i = 0; (i < alignment.originalNumberOfSequences); i++)
         if  (alignment.saveSequences[i] != -1)
-            maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+            maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     /* Generating output alignment */
     /* First Line: Sequences Number & Residued Number */

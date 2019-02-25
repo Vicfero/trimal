@@ -44,8 +44,8 @@ int Cleaner::selectMethod() {
     // With the different parameters, we decide wich one
     // is the best automated method, based on a previous
     // simulated data benchmarks, to trim the alig
-    if (avgSeq >= 0.55) return GAPPYOUT;
-    else if (avgSeq <= 0.38) return STRICT;
+    if (avgSeq >= 0.55F) return GAPPYOUT;
+    else if (avgSeq <= 0.38F) return STRICT;
 
         // Sometimes we need to use more parameters to select
         // the best automated method, always based on our
@@ -53,7 +53,7 @@ int Cleaner::selectMethod() {
     else {
         if (alig->numberOfSequences <= 20) return GAPPYOUT;
         else {
-            if ((maxSeq >= 0.5) && (maxSeq <= 0.65)) return GAPPYOUT;
+            if ((maxSeq >= 0.5F) && (maxSeq <= 0.65F)) return GAPPYOUT;
             else return STRICT;
         }
     }
@@ -63,7 +63,7 @@ Alignment *Cleaner::cleanByCutValueOverpass(
         double cut,
         float baseLine,
         const int *gInCol,
-        bool complementary) {
+        [[maybe_unused]] bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::cleanByCutValueOverpass(double cut, float baseLine, const int *gInCol, bool complementary) ");
@@ -91,7 +91,7 @@ Alignment *Cleaner::cleanByCutValueOverpass(
     // Compute, the number of columns necessary
     // to achieve the minimum number of columns
     // fixed by coverage parameter.
-    oth = utils::roundInt(((baseLine / 100.0) - (float) residues / block) * block);
+    oth = utils::roundInt((((double)baseLine / 100.0) - (double) residues / block) * block);
 
     // if it's necessary to recover some columns,
     // we apply this instructions to recover it
@@ -109,7 +109,7 @@ Alignment *Cleaner::cleanByCutValueOverpass(
         // Sort a copy of the array,
         // and take the value of the column that marks the % baseline
         utils::quicksort(vectAux, 0, alig->numberOfResidues - 1);
-        cut = vectAux[(int) ((float) (alig->numberOfResidues - 1) * (baseLine) / 100.0)];
+        cut = vectAux[(int) ((double) (alig->numberOfResidues - 1) * ((double)baseLine) / 100.0)];
 
         delete[] vectAux;
 
@@ -189,7 +189,7 @@ Alignment *Cleaner::cleanByCutValueOverpass(
         }
     }
 
-    newAlig->Cleaning->removeSmallerBlocks(blockSize, *alig);
+    newAlig->Cleaning->removeSmallerBlocks(blockSize);
 
     // Check for any additional column/sequence to be removed
     // Compute new sequences and columns numbers
@@ -204,7 +204,7 @@ Alignment *Cleaner::cleanByCutValueFallBehind(
         float cut,
         float baseLine,
         const float *ValueVect,
-        bool complementary) {
+        [[maybe_unused]] bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::cleanByCutValueFallBehind(float cut, float baseLine, const float *ValueVect, bool complementary) ");
@@ -232,7 +232,7 @@ Alignment *Cleaner::cleanByCutValueFallBehind(
     // Compute, the number of columns necessary
     // to achieve the minimum number of columns
     // fixed by coverage parameter.
-    oth = utils::roundInt(((baseLine / 100.0) - (float) residues / block) * block);
+    oth = utils::roundInt((((double)baseLine / 100.0) - (double) residues / block) * block);
 
     // if it's necessary to recover some columns,
     // we apply this instructions to recover it
@@ -316,7 +316,7 @@ Alignment *Cleaner::cleanByCutValueFallBehind(
         }
     }
 
-    newAlig->Cleaning->removeSmallerBlocks(blockSize, *alig);
+    newAlig->Cleaning->removeSmallerBlocks(blockSize);
 
     // Check for any additional column/sequence to be removed
     // Compute new sequences and columns numbers
@@ -332,7 +332,7 @@ Alignment *Cleaner::cleanByCutValueOverpassOrEquals(
         float baseLine,
         float cutCons,
         const float *MDK_Win,
-        bool complementary) {
+        [[maybe_unused]] bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::cleanByCutValueOverpassOrEquals(double cutGaps, const int *gInCol, float baseLine, float cutCons, const float *MDK_Win, bool complementary) ");
@@ -357,7 +357,7 @@ Alignment *Cleaner::cleanByCutValueOverpassOrEquals(
 
     alig->numberOfResidues = block;
 
-    remainingResidues = utils::roundInt((((baseLine / 100.0) - (float) resCounter / block)) * block);
+    remainingResidues = utils::roundInt(((((double)baseLine / 100.0) - (double) resCounter / block)) * block);
 
     float *vectAuxCons;
     int *vectAuxGaps;
@@ -377,11 +377,11 @@ Alignment *Cleaner::cleanByCutValueOverpassOrEquals(
 
         // Sort them
         utils::quicksort(vectAuxCons, 0, block - 1);
-        float blCons = vectAuxCons[(int) ((float) (alig->numberOfResidues - 1) * (100.0 - baseLine) / 100.0)];
+        float blCons = vectAuxCons[(int) ((double) (alig->numberOfResidues - 1) * (100.0 - (double)baseLine) / 100.0)];
         delete[] vectAuxCons;
 
         utils::quicksort(vectAuxGaps, 0, block - 1);
-        float blGaps = vectAuxGaps[(int) ((float) (alig->numberOfResidues - 1) * (baseLine) / 100.0)];
+        float blGaps = vectAuxGaps[(int) ((double) (alig->numberOfResidues - 1) * ((double)baseLine) / 100.0)];
         delete[] vectAuxGaps;
 
         // Calculate the midpoint of the alignment
@@ -473,7 +473,7 @@ Alignment *Cleaner::cleanByCutValueOverpassOrEquals(
     }
 
 
-    newAlig->Cleaning->removeSmallerBlocks(blockSize, *alig);
+    newAlig->Cleaning->removeSmallerBlocks(blockSize);
 
     // Check for any additional column/sequence to be removed
     // Compute new sequences and columns numbers
@@ -482,12 +482,12 @@ Alignment *Cleaner::cleanByCutValueOverpassOrEquals(
     return newAlig;
 }
 
-Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, const float *MDK_W, bool complementary, bool variable) {
+Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, const float *MDK_W, [[maybe_unused]]bool complementary, bool variable) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, const float *MDK_W, bool complementary, bool variable) ");
 
-    int i, x, pos, counter, lenBlock;
+    int i, pos, counter, lenBlock;
     Alignment *newAlig = new Alignment(*alig);
 
 
@@ -683,7 +683,7 @@ Alignment *Cleaner::cleanStrict(int gapCut, const int *gInCol, float simCut, con
     return newAlig;
 }
 
-Alignment *Cleaner::cleanOverlapSeq(float minimumOverlap, float *overlapSeq, bool complementary) {
+Alignment *Cleaner::cleanOverlapSeq(float minimumOverlap, float *overlapSeq, [[maybe_unused]]bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::cleanOverlapSeq(float minimumOverlap, float *overlapSeq, bool complementary) ");
@@ -805,9 +805,9 @@ Alignment *Cleaner::cleanCompareFile(const float cutpoint,
 
     // Sort a copy of the vectValues vector, and take the
     // value at 100% - baseline position.
-    utils::copyVect(vectValues, vectAux, alig->originalNumberOfResidues);
+    utils::copyVect(vectValues, vectAux, (unsigned)alig->originalNumberOfResidues);
     utils::quicksort(vectAux, 0, alig->originalNumberOfResidues - 1);
-    cut = vectAux[(int) ((float) (alig->originalNumberOfResidues - 1) * (100.0 - baseLine) / 100.0)];
+    cut = vectAux[(int) ((double) (alig->originalNumberOfResidues - 1) * (100.0 - (double)baseLine) / 100.0)];
 
     // We have to decide which is the smallest value
     // between the cutpoint value and the value from
@@ -993,15 +993,15 @@ Alignment *Cleaner::cleanCombMethods(bool complementarity, bool variable) {
     last80Point = 0;
 
     for (i = acm - 1, j = 1; i >= 0; i--, j++) {
-        if ((((float) j / acm) * 100.0) <= 20.0)
+        if ((((double) j / acm) * 100.0) <= 20.0)
             first20Point = vectAux[i];
-        if ((((float) j / acm) * 100.0) <= 80.0)
+        if ((((double) j / acm) * 100.0) <= 80.0)
             last80Point = vectAux[i];
     }
 
     // Computes the logaritmic's values for those points. Finally the method computes the similarity cut point using these values.
-    inic = log10(first20Point);
-    fin = log10(last80Point);
+    inic = (float)log10(first20Point);
+    fin = (float)log10(last80Point);
     vlr = ((inic - fin) / 10) + fin;
     simCut = (float) pow(10, vlr);
 
@@ -1185,7 +1185,7 @@ Alignment *Cleaner::getClustering(float identityThreshold) {
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::getClustering(float identityThreshold) ");
 
-    int i, j, *clustering;
+    int i, *clustering;
     Alignment *newAlig = new Alignment(*alig);
 
     // Get the representative member for each cluster
@@ -1209,7 +1209,7 @@ Alignment *Cleaner::getClustering(float identityThreshold) {
     return newAlig;
 }
 
-Alignment *Cleaner::removeColumns(int *columns, int init, int size, bool complementary) {
+Alignment *Cleaner::removeColumns(int *columns, int init, int size, [[maybe_unused]]bool complementary) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("Alignment *Cleaner::removeColumns(int *columns, int init, int size, bool complementary) ");
@@ -1232,7 +1232,7 @@ Alignment *Cleaner::removeColumns(int *columns, int init, int size, bool complem
 }
 
 Alignment *Cleaner::removeSequences(int *seqs, int init, int size,
-                                       bool complementary) {
+                                       [[maybe_unused]]bool complementary) {
 
     Alignment *newAlig = new Alignment(*alig);
     int i, j;
@@ -1295,16 +1295,14 @@ bool Cleaner::removeOnlyTerminal() {
     return true;
 }
 
-void Cleaner::removeSmallerBlocks(int blockSize, Alignment &original) {
+void Cleaner::removeSmallerBlocks(int blockSize) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("void Cleaner::removeSmallerBlocks(int blockSize) ");
     int i, j, pos, block;
 
     if (blockSize == 0)
-    {
         return;
-    }
 
     // Traverse the Alignment looking for blocks greater than BLOCKSIZE, everytime
     // than a column hasn't been selected, check whether the current block is big
@@ -1314,12 +1312,8 @@ void Cleaner::removeSmallerBlocks(int blockSize, Alignment &original) {
         else {
             // Remove columns from blocks smaller than input blocks size
             if (block < blockSize)
-            {
                 for (j = pos; j <= i; j++)
-                {
                     alig->saveResidues[j] = -1;
-                }
-            }
             pos = i + 1;
             block = 0;
         }
@@ -1328,23 +1322,19 @@ void Cleaner::removeSmallerBlocks(int blockSize, Alignment &original) {
     // Check final block separately since it could happen than last block is not
     // big enough but because the loop end could provoke to ignore it
     if (block < blockSize)
-    {
         for (j = pos; j <= i; j++)
-        {
             alig->saveResidues[j] = -1;
-        }
-    }
 }
 
 void Cleaner::removeAllGapsSeqsAndCols(bool seqs, bool cols) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
     StartTiming("void Cleaner::removeAllGapsSeqsAndCols(bool seqs, bool cols) ");
-    int i, j, counter;
+    unsigned i, j, counter;
 
     // Start checking the sequences.
     if (seqs) {
-        for (i = 0, counter = 0; i < alig->originalNumberOfSequences; i++) {
+        for (i = 0, counter = 0; i < (unsigned)alig->originalNumberOfSequences; i++) {
             // Forget about sequences that are already rejected
             if (alig->saveSequences[i] == -1)
                 continue;
@@ -1378,13 +1368,13 @@ void Cleaner::removeAllGapsSeqsAndCols(bool seqs, bool cols) {
 
     if (cols) {
         // Iterate over the residues
-        for (j = 0, counter = 0; j < alig->originalNumberOfResidues; j++) {
+        for (j = 0, counter = 0; j < (unsigned)alig->originalNumberOfResidues; j++) {
             // Forget about already discarded residues;
             if (alig->saveResidues[j] == -1)
                 continue;
 
             // Check the residue position on each sequence.
-            for (i = 0; i < alig->originalNumberOfSequences; i++) {
+            for (i = 0; i < (unsigned)alig->originalNumberOfSequences; i++) {
                 // Forget about sequences that are already rejected
                 if (alig->saveSequences[i] == -1)
                     continue;
@@ -1395,7 +1385,7 @@ void Cleaner::removeAllGapsSeqsAndCols(bool seqs, bool cols) {
 
             // If we didn't early-stop due to finding a non-gap
                     // residue, j == numberOfSequences
-            if (i == alig->originalNumberOfSequences) {
+            if (i == (unsigned)alig->originalNumberOfSequences) {
                 alig->saveResidues[j] = -1;
             } else counter++;
         }

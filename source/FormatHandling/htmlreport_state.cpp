@@ -5,12 +5,12 @@
 #include "utils.h"
 
 namespace FormatHandling {
-int htmlreport_state::CheckAlignment(std::istream* origin)
+int htmlreport_state::CheckAlignment([[maybe_unused]] std::istream* origin)
 {
     return 0;
 }
 
-Alignment* htmlreport_state::LoadAlignment(const std::string &filename)
+Alignment* htmlreport_state::LoadAlignment([[maybe_unused]] const std::string &filename)
 {
     return nullptr;
 }
@@ -34,7 +34,7 @@ bool htmlreport_state::SaveAlignment(const Alignment &alignment, std::ostream *o
     /* Compute maximum sequences name length */
     maxLongName = 0;
     for(i = 0; i < alignment.numberOfSequences; i++)
-        maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
 
     /* Print HTML header into output file */

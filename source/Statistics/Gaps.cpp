@@ -191,7 +191,7 @@ namespace statistics {
 
         // Calculate the gap number represented by the gaps threshold. This gap number
         // represents the maximum gap number in any column in the output alignment
-        cuttingPoint_gapThreshold = (double) alig->numberOfSequences * gapThreshold;
+        cuttingPoint_gapThreshold = (double) alig->numberOfSequences * (double) gapThreshold;
 
         // Compute the minimum columns number to be kept from the input alignment
         cuttingPoint_MinimumConserv = utils::roundInt(((double) (alig->originalNumberOfResidues * minInputAlignment) / 100.0));
@@ -271,10 +271,10 @@ namespace statistics {
             secondSlopeVector[act] /= ((float) (numColumnsWithGaps[act] + numColumnsWithGaps[prev]) / alig->originalNumberOfResidues);
 
             // If the ratio between ...
-            if ((secondSlopeVector[pprev] != -1.0) || (firstSlopeVector[pprev] != -1.0)) {
+            if ((secondSlopeVector[pprev] != -1.0F) || (firstSlopeVector[pprev] != -1.0F)) {
 
                 // first slope previus and first slope earlier previus points.
-                if (firstSlopeVector[pprev] != -1.0) {
+                if (firstSlopeVector[pprev] != -1.0F) {
                     delta = firstSlopeVector[prev] / firstSlopeVector[pprev];
                     row = pprev;
                 }
@@ -286,7 +286,7 @@ namespace statistics {
                 }
 
                 // second slope current and second slope earlier previus points.
-                if (secondSlopeVector[pprev] != -1.0) {
+                if (secondSlopeVector[pprev] != -1.0F) {
                     if (delta < (secondSlopeVector[act] / secondSlopeVector[pprev])) {
                         delta = secondSlopeVector[act] / secondSlopeVector[pprev];
                         row = pprev;
@@ -360,12 +360,12 @@ namespace statistics {
             secondSlopeVector[act] /= ((float) (numColumnsWithGaps[act] + numColumnsWithGaps[prev]) / alig->originalNumberOfResidues);
 
             // If the ratio between second slope current and second slope earlier previous points.
-            if (secondSlopeVector[pprev] != -1.0) {
+            if (secondSlopeVector[pprev] != -1.0F) {
                 if ((secondSlopeVector[act] / secondSlopeVector[pprev]) > maxSlope) {
                     maxSlope = (secondSlopeVector[act] / secondSlopeVector[pprev]);
                     max = pprev;
                 }
-            } else if (secondSlopeVector[prev] != -1.0) {
+            } else if (secondSlopeVector[prev] != -1.0F) {
                 if ((secondSlopeVector[act] / secondSlopeVector[prev]) > maxSlope) {
                     maxSlope = (secondSlopeVector[act] / secondSlopeVector[prev]);
                     max = pprev;

@@ -257,7 +257,7 @@ bool mega_sequential_state::SaveAlignment(const Alignment &alignment, std::ostre
 {
     /* Generate output alignment in MEGA format */
 
-    int i, j, k, l, m;
+    uint i, j, l;
     std::string *tmpMatrix;
 
     /* Check whether sequences in the alignment are aligned or not.
@@ -274,7 +274,7 @@ bool mega_sequential_state::SaveAlignment(const Alignment &alignment, std::ostre
     {
         /* Allocate local memory for generating output alignment */
         tmpMatrix = new std::string[alignment.originalNumberOfSequences];
-        for(i = 0; i < alignment.originalNumberOfSequences; i++)
+        for(i = 0; i < (unsigned) alignment.originalNumberOfSequences; i++)
             tmpMatrix[i] = utils::getReverse(alignment.sequences[i]);
     }
     else tmpMatrix = alignment.sequences;
@@ -298,7 +298,7 @@ bool mega_sequential_state::SaveAlignment(const Alignment &alignment, std::ostre
          << " indel=- CodeTable=Standard;\n";
 
     /* Print sequences name and sequences divided into blocks of 50 residues */
-    for(i = 0; i < alignment.originalNumberOfSequences; i++) {
+    for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++) {
         if (alignment.saveSequences[i] != -1)
         {
             *output << "\n#" << alignment.seqsName[i] << "\n";

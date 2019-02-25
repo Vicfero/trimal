@@ -37,28 +37,6 @@
 
 namespace utils {
 
-    void initlVect(int *vector, int tam, int valor) {
-
-        for (int i = 0; i < tam; i++) vector[i] = valor;
-
-    }
-
-    void initlVect(float *vector, int tam, float valor) {
-
-        for (int i = 0; i < tam; i++) vector[i] = valor;
-    }
-
-    void copyVect(int *vect1, int *vect2, int tam) {
-
-        for (int i = 0; i < tam; i++) vect2[i] = vect1[i];
-
-    }
-
-    void copyVect(float *vect1, float *vect2, int tam) {
-
-        for (int i = 0; i < tam; i++) vect2[i] = vect1[i];
-    }
-
     int roundToInf(double number) {
 
     //    return std::floor(number);
@@ -75,42 +53,6 @@ namespace utils {
 
     //    return std::ceil(number);
         return ((int) ((double) number + 1.0));
-    }
-
-    int max(int x, int y) {
-
-        if (x > y) return x;
-        else return y;
-    }
-
-    float max(float x, float y) {
-
-        if (x > y) return x;
-        else return y;
-    }
-
-    double max(double x, double y) {
-
-        if (x > y) return x;
-        else return y;
-    }
-
-    int min(int x, int y) {
-
-        if (x < y) return x;
-        else return y;
-    }
-
-    float min(float x, float y) {
-
-        if (x < y) return x;
-        else return y;
-    }
-
-    double min(double x, double y) {
-
-        if (x < y) return x;
-        else return y;
     }
 
     bool isNumber(char *num) {
@@ -488,7 +430,7 @@ namespace utils {
         size_t pos;
 
         pos = line.find(c, 0);
-        while (pos != (int) std::string::npos) {
+        while (pos != (unsigned int) std::string::npos) {
             line.erase(pos, 1);
             pos = line.find(c, pos);
         }
@@ -597,7 +539,7 @@ namespace utils {
             ratioDNA = float(degenerate + hitDNA) / k;
             ratioRNA = float(degenerate + hitRNA) / k;
 
-            if (ratioDNA < 0.95 && ratioRNA < 0.95)
+            if (ratioDNA < 0.95F && ratioRNA < 0.95F)
                 return SequenceTypes::AA;
 
                 // Identify precisely if nucleotides sequences are DNA/RNA strict or
@@ -633,7 +575,7 @@ namespace utils {
         size_t comma, separ, init;
 
         comma = size_t(-1);
-        while ((comma = line.find(',', comma + 1)) != (int) std::string::npos)
+        while ((comma = line.find(',', comma + 1)) != std::string::npos)
             nElems += 2;
         nElems += 2;
 
@@ -647,11 +589,11 @@ namespace utils {
             comma = line.find(',', init);
             separ = line.find('-', init);
 
-            if (((separ < comma) || (comma == (int) std::string::npos)) && (separ != (int) std::string::npos)) {
+            if (((separ < comma) || (comma == std::string::npos)) && (separ != std::string::npos)) {
                 numbers[i++] = atoi(line.substr(init, separ - init).c_str());
                 numbers[i++] = atoi(line.substr(separ + 1, comma - separ - 1).c_str());
                 init = comma + 1;
-            } else if ((separ > comma) || (separ == (int) std::string::npos)) {
+            } else if ((separ > comma) || (separ == std::string::npos)) {
                 numbers[i++] = atoi(line.substr(init, comma - init).c_str());
                 numbers[i++] = atoi(line.substr(init, comma - init).c_str());
                 init = comma + 1;
@@ -661,7 +603,7 @@ namespace utils {
                 return nullptr;
             if (numbers[i - 1] < numbers[i - 2])
                 return nullptr;
-            if (comma == (int) std::string::npos)
+            if (comma == std::string::npos)
                 break;
 
         } while (true);
@@ -839,23 +781,23 @@ namespace utils {
 
         float relativeGap = 1.F - float(*gapValue) / sequenNumber;
 
-        if (relativeGap >= .750)
+        if (relativeGap >= .750F)
             return 10;
-        if (relativeGap >= .500)
+        if (relativeGap >= .500F)
             return 9;
-        if (relativeGap >= .350)
+        if (relativeGap >= .350F)
             return 8;
-        if (relativeGap >= .250)
+        if (relativeGap >= .250F)
             return 7;
-        if (relativeGap >= .200)
+        if (relativeGap >= .200F)
             return 6;
-        if (relativeGap >= .150)
+        if (relativeGap >= .150F)
             return 5;
-        if (relativeGap >= .100)
+        if (relativeGap >= .100F)
             return 4;
-        if (relativeGap >= .050)
+        if (relativeGap >= .050F)
             return 3;
-        if (relativeGap >= .001)
+        if (relativeGap >= .001F)
             return 2;
         return 1;
     }
@@ -924,23 +866,23 @@ namespace utils {
         if (*consValue == 0.F)
             return 0;
 
-        if (*consValue >= .750)
+        if (*consValue >= .750F)
             return 10;
-        if (*consValue >= .500)
+        if (*consValue >= .500F)
             return 9;
-        if (*consValue >= .350)
+        if (*consValue >= .350F)
             return 8;
-        if (*consValue >= .250)
+        if (*consValue >= .250F)
             return 7;
-        if (*consValue >= .200)
+        if (*consValue >= .200F)
             return 6;
-        if (*consValue >= .150)
+        if (*consValue >= .150F)
             return 5;
-        if (*consValue >= .100)
+        if (*consValue >= .100F)
             return 4;
-        if (*consValue >= .050)
+        if (*consValue >= .050F)
             return 3;
-        if (*consValue >= .001)
+        if (*consValue >= .001F)
             return 2;
         return 1;
     }

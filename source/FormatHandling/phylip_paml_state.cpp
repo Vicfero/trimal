@@ -6,12 +6,12 @@
 
 namespace FormatHandling {
 
-int phylip_paml_state::CheckAlignment(std::istream* origin)
+int phylip_paml_state::CheckAlignment([[maybe_unused]] std::istream* origin)
 {
     return 0;
 }
 
-Alignment* phylip_paml_state::LoadAlignment(const std::string &filename)
+Alignment* phylip_paml_state::LoadAlignment([[maybe_unused]] const std::string &filename)
 {
     return nullptr;
 }
@@ -44,7 +44,7 @@ bool phylip_paml_state::SaveAlignment(const Alignment &alignment, std::ostream *
 
     maxLongName = PHYLIPDISTANCE;
     for(i = 0; (i < alignment.numberOfSequences); i++)
-        maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     /* Generating output alignment */
     /* First Line: Sequences Number & Residued Number */

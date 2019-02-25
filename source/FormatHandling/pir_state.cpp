@@ -152,7 +152,7 @@ bool pir_state::SaveAlignment(const Alignment &alignment, std::ostream *output) 
 
     /* Generate output alignment in NBRF/PIR format. Sequences can be unaligned */
 
-    int i, j, k, l;
+    uint i, j, k;
     std::string alg_datatype, *tmpMatrix;
 
     /* Depending on alignment orientation: forward or reverse. Copy directly
@@ -162,7 +162,7 @@ bool pir_state::SaveAlignment(const Alignment &alignment, std::ostream *output) 
     {
         /* Allocate local memory for generating output alignment */
         tmpMatrix = new std::string[alignment.originalNumberOfSequences];
-        for(i = 0; i < alignment.originalNumberOfSequences; i++)
+        for(i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++)
             tmpMatrix[i] = utils::getReverse(alignment.sequences[i]);
     }
     else tmpMatrix = alignment.sequences;
@@ -180,7 +180,7 @@ bool pir_state::SaveAlignment(const Alignment &alignment, std::ostream *output) 
 
 
     /* Print alignment */
-    for (i = 0; i < alignment.originalNumberOfSequences; i++) {
+    for (i = 0; i < (unsigned)alignment.originalNumberOfSequences; i++) {
         if (alignment.saveSequences && alignment.saveSequences[i] == -1) continue;
 
         /* Print sequence datatype and its name */
@@ -191,7 +191,7 @@ bool pir_state::SaveAlignment(const Alignment &alignment, std::ostream *output) 
             (*output) << ">" << alg_datatype << ";" << alignment.seqsName[i] << "\n"
                       << alignment.seqsName[i] << " " << alignment.sequences[i].length() << " bases\n";
 
-        for (j = 0, k = 0, l = 0; j < alignment.sequences[i].length(); j++) {
+        for (j = 0, k = 0; j < alignment.sequences[i].length(); j++) {
             if (alignment.saveResidues != nullptr && alignment.saveResidues[j] == -1) {
 //                 if (j == alignment->sequences[i].length() -1 ) 
 //                     (*output) << "\n";

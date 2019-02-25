@@ -166,15 +166,15 @@ Alignment *Alignment::getTranslationCDS(Alignment *ProtAlig) {
     //	which means the end of the current scope.
     StartTiming("Alignment *Alignment::getTranslationCDS(Alignment *ProtAlig) ");
 
-    int x, y, counter = 0, *mappedSeqs;
+    unsigned x, y, counter = 0, *mappedSeqs;
     Alignment *newAlig = new Alignment();
 
     // Map the selected protein sequences to the input
     // coding sequences
-    mappedSeqs = new int[ProtAlig->originalNumberOfSequences];
+    mappedSeqs = new uint[ProtAlig->originalNumberOfSequences];
 
-    for (x = 0; x < ProtAlig->originalNumberOfSequences; x++) {
-        for (y = 0; y < originalNumberOfSequences; y++) {
+    for (x = 0; x < (unsigned)ProtAlig->originalNumberOfSequences; x++) {
+        for (y = 0; y < (unsigned)originalNumberOfSequences; y++) {
             if (ProtAlig->seqsName[x] == seqsName[y]) {
                 mappedSeqs[x] = y;
                 break;
@@ -186,7 +186,7 @@ Alignment *Alignment::getTranslationCDS(Alignment *ProtAlig) {
     newAlig->seqsInfo = new std::string[ProtAlig->originalNumberOfSequences];
     newAlig->seqsName = new std::string[ProtAlig->originalNumberOfSequences];
 
-    for (x = 0; x < ProtAlig->originalNumberOfSequences; x++) {
+    for (x = 0; x < (unsigned)ProtAlig->originalNumberOfSequences; x++) {
 
         newAlig->sequences[x] = std::string();
         std::string &current = newAlig->sequences[x];
@@ -221,7 +221,7 @@ Alignment *Alignment::getTranslationCDS(Alignment *ProtAlig) {
             newAlig->saveSequences);
 
     newAlig->saveResidues = new int[ProtAlig->originalNumberOfResidues * 3];
-    for (int i = 0; i < counter; i++) {
+    for (uint i = 0; i < counter; i++) {
         newAlig->saveResidues[i] = i;
     }
 
@@ -538,7 +538,7 @@ bool Alignment::prepareCodingSequence(bool splitByStopCodon, bool ignStopCodon, 
     }
 
     bool warning = false;
-    long found;
+    ulong found;
     int i;
 
     // New code: We now care about the presence of wildcards/indeterminations
@@ -597,7 +597,7 @@ bool Alignment::prepareCodingSequence(bool splitByStopCodon, bool ignStopCodon, 
 
         // Initialize first appearence of a given stop codon to -1.
         // That means that it has not been found yet
-        found = -1;
+        found = 0;
         do {
             found = sequences[i].find("TGA", found + 1);
 
@@ -792,13 +792,13 @@ bool Alignment::fillMatrices(bool aligned, bool checkInvalidChars) {
     StartTiming("bool Alignment::fillMatrices(bool aligned) ");
     // Function to determine if a set of sequences, that can be aligned or not,
     // have been correctly load and are free of errors.
-    int i, j;
+    uint i, j;
 
     // Initialize some variables
 
     // Check whether there are any unknow/no allowed character in the sequences
     if (checkInvalidChars)
-        for (i = 0; i < numberOfSequences; i++)
+        for (i = 0; i < (unsigned)numberOfSequences; i++)
             for (j = 0; j < sequences[i].length(); j++)
                 if ((!isalpha(sequences[i][j])) && (!ispunct(sequences[i][j]))) {
                     debug.report(ErrorCode::UnknownCharacter, new std::string[2]{seqsName[i], std::to_string(sequences[i][j])});
@@ -806,12 +806,12 @@ bool Alignment::fillMatrices(bool aligned, bool checkInvalidChars) {
                 }
 
     // Check whether all sequences have same size or not
-    for (i = 1; i < numberOfSequences; i++) {
+    for (i = 1; i < (unsigned)numberOfSequences; i++) {
         if (sequences[i].length() != sequences[i - 1].length())
             break;
     }
     // Set an appropriate flag for indicating if sequences are aligned or not
-    isAligned = i == numberOfSequences;
+    isAligned = i == (unsigned)numberOfSequences;
 
     // Warm about those cases where sequences should be aligned
     // and there are not
@@ -825,8 +825,8 @@ bool Alignment::fillMatrices(bool aligned, bool checkInvalidChars) {
         numberOfResidues = sequences[0].length();
 
     // Check whether aligned sequences have the length fixed for the input alig
-    for (i = 0; (i < numberOfSequences) and (aligned); i++) {
-        if (sequences[i].length() != numberOfResidues) {
+    for (i = 0; (i < (unsigned)numberOfSequences) and (aligned); i++) {
+        if (sequences[i].length() != (unsigned)numberOfResidues) {
             debug.report(ErrorCode::SequencesNotSameSize,
                     new std::string[3]{
                 seqsName[i],
@@ -844,14 +844,14 @@ bool Alignment::fillMatrices(bool aligned, bool checkInvalidChars) {
         // columns should be kept in output alignment after applying any method
         // and which columns should not
         saveResidues = new int[numberOfResidues];
-        for (i = 0; i < numberOfResidues; i++)
+        for (i = 0; i < (unsigned)numberOfResidues; i++)
             saveResidues[i] = i;
 
         // Assign its position to each sequence. Similar to the columns numbering
         // possible, assign to each sequence its position is useful to know which
         // sequences will be in the output alignment
         saveSequences = new int[numberOfSequences];
-        for (i = 0; i < numberOfSequences; i++)
+        for (i = 0; i < (unsigned)numberOfSequences; i++)
             saveSequences[i] = i;
     }
 
@@ -867,7 +867,8 @@ void Alignment::printAlignmentInfo(ostream &file) {
     // Print information about sequences number, average sequence length, maximum
     // and minimum sequences length, etc
 
-    int i, j, valid_res, max, min, max_pos, min_pos, total_res;
+    int i, valid_res, max, min, max_pos, min_pos, total_res;
+    uint j;
 
     // Storage which sequences are the longest and shortest ones
     max = 0;
@@ -947,7 +948,7 @@ void Alignment::printSeqIdentity() {
 
     // Compute longest sequences name
     for (i = 0, maxLongName = 0; i < originalNumberOfSequences; i++)
-        maxLongName = utils::max(maxLongName, seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)seqsName[i].size());
 
     // Once the method has computed all of different values, it prints it
     cout.precision(4);
@@ -1035,7 +1036,7 @@ void Alignment::printSeqOverlap() {
 
     // Compute longest sequences name 
     for (i = 0, maxLongName = 0; i < numberOfSequences; i++)
-        maxLongName = utils::max(maxLongName, seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)seqsName[i].size());
 
     // Once the method has computed all of different values, it prints it
     cout.precision(4);
@@ -1190,7 +1191,7 @@ bool Alignment::alignmentSummaryHTML(const Alignment &trimmedAlig, const char *c
     // Compute maximum sequences name length.
     maxLongName = 0;
     for (i = 0; i < originalNumberOfSequences; i++)
-        maxLongName = utils::max(maxLongName, seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)seqsName[i].size());
 
     // Compute HTML blank spaces
     minHTML = utils::max(25, maxLongName + 10);
@@ -1334,23 +1335,23 @@ bool Alignment::alignmentSummaryHTML(const Alignment &trimmedAlig, const char *c
                     file << "<span class=c12> </span>";
                 else if (gapsValues[k] == originalNumberOfSequences)
                     file << "<span class=c1> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .750)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .750F)
                     file << "<span class=c11> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .500)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .500F)
                     file << "<span class=c10> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .350)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .350F)
                     file << "<span  class=c9> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .250)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .250F)
                     file << "<span  class=c8> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .200)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .200F)
                     file << "<span  class=c7> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .150)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .150F)
                     file << "<span  class=c6> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .100)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .100F)
                     file << "<span  class=c5> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .050)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .050F)
                     file << "<span  class=c4> </span>";
-                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .001)
+                else if (1 - (float(gapsValues[k]) / originalNumberOfSequences) >= .001F)
                     file << "<span  class=c3> </span>";
                 else
                     file << "<span  class=c2> </span>";
@@ -1360,25 +1361,25 @@ bool Alignment::alignmentSummaryHTML(const Alignment &trimmedAlig, const char *c
             for (k = j; ((k < originalNumberOfResidues) && (k < (j + HTMLBLOCKS))); k++)
                 if (simValues[k] == 1)
                     file << "<span class=c12> </span>";
-                else if (simValues[k] == 0)
+                else if (simValues[k] == 0.0F)
                     file << "<span class=c1> </span>";
-                else if (simValues[k] >= .750)
+                else if (simValues[k] >= .750F)
                     file << "<span class=c11> </span>";
-                else if (simValues[k] >= .500)
+                else if (simValues[k] >= .500F)
                     file << "<span class=c10> </span>";
-                else if (simValues[k] >= .250)
+                else if (simValues[k] >= .250F)
                     file << "<span  class=c9> </span>";
-                else if (simValues[k] >= .100)
+                else if (simValues[k] >= .100F)
                     file << "<span  class=c8> </span>";
-                else if (simValues[k] >= .010)
+                else if (simValues[k] >= .010F)
                     file << "<span  class=c7> </span>";
-                else if (simValues[k] >= .001)
+                else if (simValues[k] >= .001F)
                     file << "<span  class=c6> </span>";
-                else if (simValues[k] >= 1e-4)
+                else if (simValues[k] >= 1e-4F)
                     file << "<span  class=c5> </span>";
-                else if (simValues[k] >= 1e-5)
+                else if (simValues[k] >= 1e-5F)
                     file << "<span  class=c4> </span>";
-                else if (simValues[k] >= 1e-6)
+                else if (simValues[k] >= 1e-6F)
                     file << "<span  class=c3> </span>";
                 else
                     file << "<span  class=c2> </span>";
@@ -1388,25 +1389,25 @@ bool Alignment::alignmentSummaryHTML(const Alignment &trimmedAlig, const char *c
             for (k = j; ((k < originalNumberOfResidues) && (k < (j + HTMLBLOCKS))); k++)
                 if (consValues[k] == 1)
                     file << "<span class=c12> </span>";
-                else if (consValues[k] == 0)
+                else if (consValues[k] == 0.0F)
                     file << "<span class=c1> </span>";
-                else if (consValues[k] >= .750)
+                else if (consValues[k] >= .750F)
                     file << "<span class=c11> </span>";
-                else if (consValues[k] >= .500)
+                else if (consValues[k] >= .500F)
                     file << "<span class=c10> </span>";
-                else if (consValues[k] >= .350)
+                else if (consValues[k] >= .350F)
                     file << "<span  class=c9> </span>";
-                else if (consValues[k] >= .250)
+                else if (consValues[k] >= .250F)
                     file << "<span  class=c8> </span>";
-                else if (consValues[k] >= .200)
+                else if (consValues[k] >= .200F)
                     file << "<span  class=c7> </span>";
-                else if (consValues[k] >= .150)
+                else if (consValues[k] >= .150F)
                     file << "<span  class=c6> </span>";
-                else if (consValues[k] >= .100)
+                else if (consValues[k] >= .100F)
                     file << "<span  class=c5> </span>";
-                else if (consValues[k] >= .050)
+                else if (consValues[k] >= .050F)
                     file << "<span  class=c4> </span>";
-                else if (consValues[k] >= .001)
+                else if (consValues[k] >= .001F)
                     file << "<span  class=c3> </span>";
                 else
                     file << "<span  class=c2> </span>";
@@ -1745,7 +1746,7 @@ bool Alignment::alignmentSummarySVG(Alignment &trimmedAlig, const char *const de
     // Compute HTML blank spaces
     j = 0;
     for (i = 0; i < numberOfSequences; i++)
-        j = utils::max(j, seqsName[i].size());
+        j = utils::max(j, (int)seqsName[i].size());
 
     int sequencesNamesLength = utils::max(25, j);
 

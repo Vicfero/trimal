@@ -210,7 +210,7 @@ bool nexus_state::SaveAlignment(const Alignment &alignment, std::ostream *output
     // Compute maximum sequences name length
     for (i = 0; (i < alignment.originalNumberOfSequences); i++)
         if (alignment.saveSequences[i] != -1)
-            maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+            maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     // Compute output file datatype
     alignment.getAlignmentType();

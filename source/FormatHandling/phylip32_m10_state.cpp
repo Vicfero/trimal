@@ -5,12 +5,12 @@
 
 namespace FormatHandling {
 
-int phylip32_m10_state::CheckAlignment(std::istream* origin)
+int phylip32_m10_state::CheckAlignment([[maybe_unused]] std::istream* origin)
 {
     return 0;
 }
 
-Alignment* phylip32_m10_state::LoadAlignment(const std::string &filename)
+Alignment* phylip32_m10_state::LoadAlignment([[maybe_unused]] const std::string &filename)
 {
     return nullptr;
 }
@@ -46,7 +46,7 @@ bool phylip32_m10_state::SaveAlignment(const Alignment &alignment, std::ostream 
     maxLongName = PHYLIPDISTANCE;
     for(i = 0; (i < alignment.originalNumberOfSequences); i++)
         if  (alignment.saveSequences[i] != -1)
-            maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+            maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     if (maxLongName > PHYLIPDISTANCE) {
         maxLongName = PHYLIPDISTANCE;

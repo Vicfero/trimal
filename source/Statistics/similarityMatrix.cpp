@@ -219,7 +219,7 @@ namespace statistics {
         for (i = 0; i < numPositions; i++) {
             for (j = i + 1; j < numPositions; j++) {
                 if (simMat[i][j] != simMat[j][i]) {
-                    float value = (simMat[i][j] + simMat[j][i]) / 2.0;
+                    float value = (simMat[i][j] + simMat[j][i]) / 2.0F;
                     simMat[i][j] = value;
                     simMat[j][i] = value;
                 }
@@ -231,10 +231,10 @@ namespace statistics {
 
         for (j = 0; j < numPositions; j++) {
             for (i = 0; i < numPositions; i++) {
-                if ((i != j) && (distMat[i][j] == 0.0)) {
+                if ((i != j) && (distMat[i][j] == 0.0F)) {
                     for (k = 0, sum = 0; k < numPositions; k++)
                         sum += ((simMat[k][j] - simMat[k][i]) * (simMat[k][j] - simMat[k][i]));
-                    sum = (float) sqrt(sum);
+                    sum = sqrtf(sum);
                     distMat[i][j] = sum;
                     distMat[j][i] = sum;
                 }
@@ -269,10 +269,10 @@ namespace statistics {
         // based on Euclidean distance
         for (j = 0; j < numPositions; j++) {
             for (i = 0; i < numPositions; i++) {
-                if ((i != j) && (distMat[i][j] == 0.0)) {
+                if ((i != j) && (distMat[i][j] == 0.0F)) {
                     for (k = 0, sum = 0; k < numPositions; k++)
                         sum += ((simMat[k][j] - simMat[k][i]) * (simMat[k][j] - simMat[k][i]));
-                    sum = (float) sqrt(sum);
+                    sum = sqrtf(sum);
                     distMat[i][j] = sum;
                     distMat[j][i] = sum;
                 }
@@ -303,10 +303,10 @@ namespace statistics {
         // based on Euclidean distance
         for (j = 0; j < numPositions; j++) {
             for (i = 0; i < numPositions; i++) {
-                if ((i != j) && (distMat[i][j] == 0.0)) {
+                if ((i != j) && (distMat[i][j] == 0.0F)) {
                     for (k = 0, sum = 0; k < numPositions; k++)
                         sum += ((simMat[k][j] - simMat[k][i]) * (simMat[k][j] - simMat[k][i]));
-                    sum = (float) sqrt(sum);
+                    sum = sqrtf(sum);
                     distMat[i][j] = sum;
                     distMat[j][i] = sum;
                 }
@@ -336,10 +336,10 @@ namespace statistics {
         // Calculate the distances between nucleotides based on Euclidean distance
         for (j = 0; j < numPositions; j++) {
             for (i = 0; i < numPositions; i++) {
-                if ((i != j) && (distMat[i][j] == 0.0)) {
+                if ((i != j) && (distMat[i][j] == 0.0F)) {
                     for (k = 0, sum = 0; k < numPositions; k++)
                         sum += ((simMat[k][j] - simMat[k][i]) * (simMat[k][j] - simMat[k][i]));
-                    sum = (float) sqrt(sum);
+                    sum = sqrtf(sum);
                     distMat[i][j] = sum;
                     distMat[j][i] = sum;
                 }
@@ -401,10 +401,10 @@ namespace statistics {
         // Calculate the distances between residues based on Euclidean distance
         for (j = 0; j < numPositions; j++) {
             for (i = 0; i < numPositions; i++) {
-                if ((i != j) && (distMat[i][j] == 0.0)) {
+                if ((i != j) && (distMat[i][j] == 0.0F)) {
                     for (k = 0, sum = 0; k < numPositions; k++)
                         sum += ((simMat[k][j] - simMat[k][i]) * (simMat[k][j] - simMat[k][i]));
-                    sum = (float) sqrt(sum);
+                    sum = sqrtf(sum);
                     distMat[i][j] = sum;
                     distMat[j][i] = sum;
                 }

@@ -315,7 +315,7 @@ namespace statistics {
 
                 // Initialize the hits vector for each alignment
                 vectHits[i] = new float[numResiduesAlig[i]];
-                utils::initlVect(vectHits[i], numResiduesAlig[i], 0);
+                utils::initlVect(vectHits[i], numResiduesAlig[i], 0.0F);
 
                 for (j = 0, pairRes = 0, hits = 0; j < numResiduesAlig[i]; j++, pairRes = 0, hits = 0) {
 
@@ -361,7 +361,7 @@ namespace statistics {
                     // For each column, compute the hits proportion for
                     // every residue pair against the rest of alignments
                     if (pairRes != 0) {
-                        vectHits[i][j] += ((1.0 * hits) / pairRes);
+                        vectHits[i][j] += ((1.0F * hits) / pairRes);
                         value += vectHits[i][j];
                     }
                 }
@@ -388,7 +388,7 @@ namespace statistics {
             // The method returns a vector with the consistency
             // value for each column in the selected alignment
             if (columnsValue != nullptr) {
-                utils::initlVect(columnsValue, numResiduesAlig[alignmentIndex], -1);
+                utils::initlVect(columnsValue, numResiduesAlig[alignmentIndex], -1.0F);
                 for (i = 0; i < numResiduesAlig[alignmentIndex]; i++)
                     columnsValue[i] = vectHits[alignmentIndex][i];
             }
@@ -438,7 +438,7 @@ namespace statistics {
         // Initialize the vector where we are going to store
         // the proportion of hits for each column in the
         // selected alignment
-        utils::initlVect(columnsValue, numResidues, 0);
+        utils::initlVect(columnsValue, numResidues, 0.0F);
 
         // Allocate dynamic local memory
         names = new string[numSeqs];
@@ -507,7 +507,7 @@ namespace statistics {
                 }
             }
             // Store the hits proportion for each column
-            if (pairRes != 0) columnsValue[i] += ((1.0 * hit) / pairRes);
+            if (pairRes != 0) columnsValue[i] += ((1.0F * hit) / pairRes);
         }
 
         // Deallocate dynamic memory

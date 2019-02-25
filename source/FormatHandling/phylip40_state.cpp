@@ -238,7 +238,7 @@ bool phylip40_state::SaveAlignment(const Alignment &alignment, std::ostream *out
      * 10 characters) or not, get maximum sequence name length */
     maxLongName = PHYLIPDISTANCE;
     for(i = 0; (i < alignment.originalNumberOfSequences); i++)
-        maxLongName = utils::max(maxLongName, alignment.seqsName[i].size());
+        maxLongName = utils::max(maxLongName, (int)alignment.seqsName[i].size());
 
     /* Generating output alignment */
     /* First Line: Sequences Number & Residued Number */
