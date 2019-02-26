@@ -1608,10 +1608,14 @@ Cleaner::Cleaner(Alignment *parent, Cleaner *mold) {
     right_boundary = mold->right_boundary;
 }
 
+#define reportPatterns false
+
 Alignment *Cleaner::cleanByPattern() {
 
     // Typedef what is a pattern
     typedef std::vector<int> pattern;
+
+    Alignment * newAlig = new Alignment(*alig);
 
     // Create two vectors: Seen patterns, and count of seen patterns
     std::vector<pattern> patternCollection;
@@ -1633,7 +1637,9 @@ Alignment *Cleaner::cleanByPattern() {
         for(int sequence = 0; sequence < alig->numberOfSequences; sequence++)
         {
             temporalPattern[alig->sequences[sequence][residue]]++;
+#if reportPatterns
             std::cout << alig->sequences[sequence][residue];
+#endif
         }
 
         // Create a pattern to compare
@@ -1661,6 +1667,11 @@ Alignment *Cleaner::cleanByPattern() {
             patternCollection.emplace_back(currentPattern);
             patternCollectionCount.emplace_back(0);
         }
+        else
+        {
+            newAlig->numberOfResidues--;
+            newAlig->saveResidues[residue] = -1;
+        }
 
         // Set the current pattern ID to the iterator variable.
         // If new, i == patternCollection.size() - 1,
@@ -1669,12 +1680,13 @@ Alignment *Cleaner::cleanByPattern() {
 
         // Increase the count of each pattern.
         patternCollectionCount[i]++;
-
+#if reportPatterns
         std::cout << "\t" << i << "\n";
+#endif
     }
 
     // Report results - Pattern per column
-
+#if reportPatterns
     debug.log(INFO) << "Pattern per column:\n";
 
     for (int i = 0; i < alig->numberOfResidues; i++)
@@ -1688,16 +1700,19 @@ Alignment *Cleaner::cleanByPattern() {
 
     for (int i = 0; i < patternCollection.size(); i++)
         debug.log(INFO) << i << "\t" << patternCollectionCount[i] << "\n";
+#endif
 
-    // Return the original alignment, as this is still exploratory
-
-    return alig;
+    // Return the cleaned alignment
+    return newAlig;
 }
 
 Alignment *Cleaner::cleanByComplexPattern() {
 
+
     // Typedef what is a pattern
     typedef std::map<char, int> pattern;
+
+    Alignment * newAlig = new Alignment(*alig);
 
     // Create two vectors: Seen patterns, and count of seen patterns
     std::vector<pattern> patternCollection;
@@ -1719,7 +1734,9 @@ Alignment *Cleaner::cleanByComplexPattern() {
         for(int sequence = 0; sequence < alig->numberOfSequences; sequence++)
         {
             temporalPattern[alig->sequences[sequence][residue]]++;
+#if reportPatterns
             std::cout << alig->sequences[sequence][residue];
+#endif
         }
 
         // Iterator variable i.
@@ -1737,6 +1754,11 @@ Alignment *Cleaner::cleanByComplexPattern() {
             patternCollection.emplace_back(temporalPattern);
             patternCollectionCount.emplace_back(0);
         }
+        else
+        {
+            newAlig->numberOfResidues--;
+            newAlig->saveResidues[residue] = -1;
+        }
 
         // Set the current pattern ID to the iterator variable.
         // If new, i == patternCollection.size() - 1,
@@ -1745,10 +1767,11 @@ Alignment *Cleaner::cleanByComplexPattern() {
 
         // Increase the count of each pattern.
         patternCollectionCount[i]++;
-
+#if reportPatterns
         std::cout << "\t" << i << "\n";
+#endif
     }
-
+#if reportPatterns
     // Report results - Pattern per column
 
     debug.log(INFO) << "Pattern per column:\n";
@@ -1764,16 +1787,17 @@ Alignment *Cleaner::cleanByComplexPattern() {
 
     for (int i = 0; i < patternCollection.size(); i++)
         debug.log(INFO) << i << "\t" << patternCollectionCount[i] << "\n";
-
-    // Return the original alignment, as this is still exploratory
-
-    return alig;
+#endif
+    // Return the cleaned alignment
+    return newAlig;
 }
 
 Alignment *Cleaner::cleanByComplexPattern2() {
 
     // Typedef what is a pattern
     typedef std::vector<int> pattern;
+
+    Alignment * newAlig = new Alignment(*alig);
 
     // Save a temporal map of character - int.
     // Used to fill the pattern
@@ -1810,8 +1834,9 @@ Alignment *Cleaner::cleanByComplexPattern2() {
                 patternMap.emplace_back(alig->sequences[sequence][residue]);
             // Store the char index
             temporalPattern.emplace_back(i);
-
+#if reportPatterns
             std::cout << alig->sequences[sequence][residue];
+#endif
         }
 
         // Compare with each already seen pattern. If found, break the loop
@@ -1826,6 +1851,11 @@ Alignment *Cleaner::cleanByComplexPattern2() {
             patternCollection.emplace_back(temporalPattern);
             patternCollectionCount.emplace_back(0);
         }
+        else
+        {
+            newAlig->numberOfResidues--;
+            newAlig->saveResidues[residue] = -1;
+        }
 
         // Set the current pattern ID to the iterator variable.
         // If new, i == patternCollection.size() - 1,
@@ -1834,11 +1864,11 @@ Alignment *Cleaner::cleanByComplexPattern2() {
 
         // Increase the count of each pattern.
         patternCollectionCount[i]++;
-
+#if reportPatterns
         std::cout << "\t" << i << "\n";
-
+#endif
     }
-
+#if reportPatterns
     // Report results - Pattern per column
 
     debug.log(INFO) << "Pattern per column:\n";
@@ -1854,8 +1884,9 @@ Alignment *Cleaner::cleanByComplexPattern2() {
 
     for (int i = 0; i < patternCollection.size(); i++)
         debug.log(INFO) << i << "\t" << patternCollectionCount[i] << "\n";
-
-    // Return the original alignment, as this is still exploratory
-
-    return alig;
+#endif
+    // Return the cleaned alignment
+    return newAlig;
 }
+
+#undef reportPatterns
