@@ -45,6 +45,7 @@ public:
         automated1          = false,
         patternTrim         = false,
         complexPatternTrim  = false,
+        complexPatternTrim2 = false,
         sgc                 = false,
         sgt                 = false, 
         ssc                 = false, 
@@ -190,6 +191,7 @@ private: // Parse Arguments Methods
         bool min_coverage_argument          (const int* argc, char* argv[], int* currentArg);
         bool patternCleaning                (const int* argc, char* argv[], int* currentArg);
         bool complexPatternCleaning         (const int* argc, char* argv[], int* currentArg);
+        bool complexPatternCleaning2        (const int* argc, char* argv[], int* currentArg);
 
 public:
     bool processArguments(char* argv[]);

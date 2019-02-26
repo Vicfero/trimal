@@ -136,6 +136,7 @@ void trimAlManager::parseArguments(int argc, char *argv[]) {
 
             checkArgument(patternCleaning)
             checkArgument(complexPatternCleaning)
+            checkArgument(complexPatternCleaning2)
         }
 
         // Modifiers
@@ -896,6 +897,15 @@ inline bool trimAlManager::complexPatternCleaning(const int *argc, char *argv[],
     return false;
 }
 
+inline bool trimAlManager::complexPatternCleaning2(const int *argc, char *argv[], int *i) {
+
+    if ((!strcmp(argv[*i], "-complexpattern2")) && !complexPatternTrim2) {
+        complexPatternTrim2 = true;
+        return true;
+    }
+    return false;
+}
+
 bool trimAlManager::processArguments(char *argv[]) {
     // Create a timer that will report times upon its destruction
     //	which means the end of the current scope.
@@ -906,7 +916,16 @@ bool trimAlManager::processArguments(char *argv[]) {
         //  that have been requested.
         // We can use this information to prevent performing more than one method,
         //  and using as a bool, to check if any automatic method has been used.
-        automatedMethodCount = nogaps + noallgaps + gappyout + strict + strictplus + automated1 + patternTrim + complexPatternTrim;
+        automatedMethodCount =
+                nogaps +
+                noallgaps +
+                gappyout +
+                strict +
+                strictplus +
+                automated1 +
+                patternTrim +
+                complexPatternTrim +
+                complexPatternTrim2;
 
         check_arguments_incompatibilities();
         check_arguments_needs(argv);
@@ -979,6 +998,7 @@ inline bool trimAlManager::check_thresholds_incompatibilities() {
             if (gappyout)               autom = "-gappyout";
             if (patternTrim)            autom = "-pattern";
             if (complexPatternTrim)     autom = "-complexpattern";
+            if (complexPatternTrim2)    autom = "-complexpattern2";
             if (nogaps)                 autom = "-nogaps";
             if (noallgaps)              autom = "-noallgaps";
             if (automated1)             autom = "-automated1";
@@ -1015,6 +1035,7 @@ inline bool trimAlManager::check_automated_methods_incompatibilities() {
         if (strictplus)             autom = "-strictplus";
         if (patternTrim)            autom = "-pattern";
         if (complexPatternTrim)     autom = "-complexpattern";
+        if (complexPatternTrim2)    autom = "-complexpattern2";
         if (gappyout)               autom = "-gappyout";
         if (nogaps)                 autom = "-nogaps";
         if (noallgaps)              autom = "-noallgaps";
@@ -1239,6 +1260,7 @@ inline bool trimAlManager::check_similarity_matrix() {
             (!strictplus) &&
             (!patternTrim) &&
             (!complexPatternTrim) &&
+            (!complexPatternTrim2) &&
             (!automated1) &&
             (similarityThreshold == -1) && (!ssc) && (!sst)) {
             debug.report(ErrorCode::MatrixGivenWithNoMethodToUseIt);
@@ -1951,6 +1973,8 @@ inline void trimAlManager::CleanResiduesAuto() {
         tempAlig = singleAlig->Cleaning->cleanByPattern();
     } else if (complexPatternTrim) {
         tempAlig = singleAlig->Cleaning->cleanByComplexPattern();
+    } else if (complexPatternTrim2) {
+        tempAlig = singleAlig->Cleaning->cleanByComplexPattern2();
     }
 
     // Move the new formed alignment to the variable singleAlig

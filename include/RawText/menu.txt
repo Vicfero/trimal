@@ -166,6 +166,10 @@ For a complete list please see the User Guide or visit http://trimal.cgenomics.o
         A column pattern is the same as another pattern if they contain the
             same proportion of different residues, disregarding the order
             or what residues are present on the column.
+
+        Ej: -QQQQQQQQ and VVQVVVVVV are the same pattern.
+            AEDDDEDDD and ADDEEDDDD are the same pattern.
+
     [b]-complexpattern[r]
         Explore the column patterns.
         A column pattern is the same as another pattern if they contain the
@@ -174,6 +178,17 @@ For a complete list please see the User Guide or visit http://trimal.cgenomics.o
             not only the raw count, but the associated residue.
         This will produce more patterns than the -pattern option.
 
+        Ej: -QQQQQQQQ and VVQVVVVVV are different patterns.
+            AEDDDEDDD and ADDEEDDDD are the same pattern.
+
+    [b]-complexpattern2[r]
+        Explore the column patterns.
+        A column pattern is the same as another pattern if all sequences that
+        have the same residue on one column, and on another different column,
+        regardless if it is the same residue on both columns.
+        Ej: -QQQQQQQQ and VVQVVVVVV are different patterns.
+            AEDDDEDDD and ADDEEDDDD are different patterns.
+            ASSSSSSSS and -NNNNNNNN are the same pattern.
 
     [b]-clusters <n>[r]
         Get the most Nth representatives sequences from a given alignment.
